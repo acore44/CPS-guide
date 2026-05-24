@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPS Vocabulary — Study & Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f5f2ed; --surface: #ffffff; --text: #1a1814; --muted: #7a776f;
+  --border: #e0dbd3; --accent: #2d5a3d; --accent-light: #e8f0e9;
+  --warn: #8a4a00; --warn-bg: #fff3e0;
+  --lc-bg:#e8f0e9;--lc-text:#1e4228; --kp-bg:#e6eef8;--kp-text:#1a3660;
+  --tp-bg:#f5ece3;--tp-text:#5c3010; --lb-bg:#f0eaf5;--lb-text:#3d1f5c;
+  --cp-bg:#e3eef0;--cp-text:#0f3d45; --ct-bg:#eaf3e6;--ct-text:#1f4a15;
+  --dt-bg:#fdf0de;--dt-text:#5c3800; --dp-bg:#fde8e3;--dp-text:#5c1f0f;
+  --cv-bg:#e3f0e8;--cv-text:#0f4525; --wc-bg:#eeebe6;--wc-text:#3d3930;
+  --cog-bg:#e8eaf6;--cog-text:#1a237e; --aff-bg:#fce4ec;--aff-text:#880e4f;
+}
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* NAV */
+nav { background:var(--accent); color:#fff; padding:0 1.5rem; display:flex; align-items:center; gap:0; position:sticky; top:0; z-index:100; box-shadow:0 2px 8px rgba(0,0,0,.15); }
+.nav-brand { font-family:'DM Serif Display',serif; font-size:1.15rem; padding:1rem 1.5rem 1rem 0; border-right:1px solid rgba(255,255,255,.2); margin-right:0.5rem; white-space:nowrap; }
+.nav-tab { padding:0 1.1rem; height:52px; display:flex; align-items:center; gap:6px; font-size:13px; font-weight:500; color:rgba(255,255,255,.7); cursor:pointer; border-bottom:2px solid transparent; transition:all .15s; white-space:nowrap; background:none; border-top:none; border-left:none; border-right:none; font-family:'DM Sans',sans-serif; }
+.nav-tab:hover { color:#fff; }
+.nav-tab.active { color:#fff; border-bottom-color:#fff; }
+.nav-tab svg { width:15px; height:15px; }
+.nav-right { margin-left:auto; display:flex; align-items:center; gap:8px; }
+.streak-badge { background:rgba(255,255,255,.15); border-radius:20px; padding:4px 10px; font-size:12px; display:flex; align-items:center; gap:4px; }
+
+/* PAGES */
+.page { display:none; }
+.page.active { display:block; }
+
+/* ── REFERENCE PAGE ── */
+.ref-controls { background:var(--surface); border-bottom:1px solid var(--border); padding:.9rem 1.5rem; display:flex; gap:8px; flex-wrap:wrap; align-items:center; position:sticky; top:52px; z-index:90; }
+.search-wrap { position:relative; flex:1; min-width:180px; }
+.search-wrap svg { position:absolute; left:9px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+.ref-controls input { width:100%; padding:7px 12px 7px 32px; border:1px solid var(--border); border-radius:8px; font-family:'DM Sans',sans-serif; font-size:13px; background:var(--bg); color:var(--text); outline:none; transition:border-color .15s; }
+.ref-controls input:focus { border-color:var(--accent); }
+.filter-btn { font-family:'DM Sans',sans-serif; font-size:11px; font-weight:500; padding:5px 13px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; white-space:nowrap; transition:all .15s; }
+.filter-btn:hover { border-color:var(--accent); color:var(--accent); }
+.filter-btn.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+.view-toggle { display:flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.view-btn { padding:5px 10px; background:transparent; border:none; cursor:pointer; color:var(--muted); font-size:13px; transition:all .15s; }
+.view-btn.active { background:var(--accent); color:#fff; }
+.stats-bar { padding:.5rem 1.5rem; font-size:12px; color:var(--muted); background:var(--bg); border-bottom:1px solid var(--border); display:flex; gap:16px; align-items:center; }
+.stats-bar span { display:flex; align-items:center; gap:4px; }
+
+/* cards grid */
+.ref-grid { padding:1.25rem 1.5rem 3rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }
+.ref-grid.compact { grid-template-columns:1fr; gap:4px; padding:0.75rem 1.5rem 3rem; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1rem 1.25rem; transition:box-shadow .15s,transform .15s; position:relative; }
+.card:hover { box-shadow:0 4px 16px rgba(0,0,0,.07); transform:translateY(-1px); }
+.card.starred { border-color:#f0b429; }
+.card.compact-card { border-radius:8px; padding:.6rem 1rem; display:flex; align-items:baseline; gap:12px; }
+.cat-badge { display:inline-block; font-size:10px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; padding:3px 9px; border-radius:20px; margin-bottom:9px; }
+.card-term { font-family:'DM Serif Display',serif; font-size:16px; color:var(--text); margin-bottom:5px; }
+.card-def { font-size:13px; color:var(--muted); line-height:1.65; font-weight:300; }
+.compact-card .card-term { font-size:14px; font-family:'DM Sans',sans-serif; font-weight:500; white-space:nowrap; min-width:160px; }
+.compact-card .card-def { font-size:12px; }
+.compact-card .cat-badge { margin-bottom:0; font-size:9px; }
+.star-btn { position:absolute; top:10px; right:10px; background:none; border:none; cursor:pointer; color:#ccc; font-size:16px; line-height:1; padding:2px; transition:color .15s; }
+.star-btn.on { color:#f0b429; }
+.no-results { grid-column:1/-1; text-align:center; padding:4rem; color:var(--muted); font-size:14px; }
+
+/* mastery dots */
+.mastery-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-left:6px; vertical-align:middle; }
+.m0 { background:#e0dbd3; } .m1 { background:#f0b429; } .m2 { background:#4caf50; }
+
+/* ── FLASHCARD PAGE ── */
+.quiz-wrap { max-width:680px; margin:0 auto; padding:2rem 1.5rem; }
+.quiz-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:10px; }
+.quiz-header h2 { font-family:'DM Serif Display',serif; font-size:1.4rem; font-weight:400; }
+.quiz-options { display:flex; gap:8px; flex-wrap:wrap; }
+.quiz-opt { font-size:12px; padding:5px 12px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s; }
+.quiz-opt.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+.progress-row { display:flex; gap:6px; align-items:center; margin-bottom:1.5rem; }
+.prog-bar-wrap { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.prog-bar { height:100%; background:var(--accent); border-radius:3px; transition:width .3s; }
+.prog-label { font-size:12px; color:var(--muted); white-space:nowrap; }
+
+/* flashcard */
+.fc-scene { perspective:1000px; width:100%; margin-bottom:1.25rem; cursor:pointer; }
+.fc-scene:focus { outline:none; }
+.fc-card { width:100%; min-height:260px; position:relative; transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); border-radius:16px; }
+.fc-card.flipped { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; backface-visibility:hidden; border-radius:16px; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:2rem; text-align:center; border:1px solid var(--border); background:var(--surface); }
+.fc-back { transform:rotateY(180deg); background:var(--accent-light); }
+.fc-label { font-size:11px; font-weight:500; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:1rem; }
+.fc-back .fc-label { color:var(--accent); }
+.fc-term { font-family:'DM Serif Display',serif; font-size:1.8rem; color:var(--text); line-height:1.2; margin-bottom:.5rem; }
+.fc-cat { font-size:11px; color:var(--muted); margin-top:.75rem; }
+.fc-def { font-size:15px; color:var(--text); line-height:1.7; font-weight:300; }
+.fc-hint { font-size:12px; color:var(--muted); margin-top:.75rem; font-style:italic; }
+.fc-hint b { color:var(--accent); font-style:normal; }
+
+.rating-row { display:flex; gap:10px; justify-content:center; margin-bottom:1.5rem; }
+.rating-row.hidden { visibility:hidden; pointer-events:none; }
+.rate-btn { flex:1; max-width:140px; padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--surface); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.rate-btn .emoji { font-size:20px; }
+.rate-btn.missed { border-color:#e57373; color:#c62828; }
+.rate-btn.missed:hover { background:#ffebee; }
+.rate-btn.almost { border-color:#ffb74d; color:#e65100; }
+.rate-btn.almost:hover { background:#fff3e0; }
+.rate-btn.gotit { border-color:#81c784; color:#2e7d32; }
+.rate-btn.gotit:hover { background:#e8f5e9; }
+
+.fc-nav { display:flex; justify-content:center; gap:10px; }
+.fc-nav button { padding:8px 20px; border-radius:8px; border:1px solid var(--border); background:var(--surface); font-family:'DM Sans',sans-serif; font-size:13px; cursor:pointer; transition:all .15s; color:var(--text); }
+.fc-nav button:hover { border-color:var(--accent); color:var(--accent); }
+.fc-nav button:disabled { opacity:.4; cursor:default; }
+
+/* session complete */
+.session-done { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:2.5rem; text-align:center; }
+.session-done h3 { font-family:'DM Serif Display',serif; font-size:1.6rem; font-weight:400; margin-bottom:.5rem; }
+.session-done p { color:var(--muted); font-size:14px; margin-bottom:1.5rem; }
+.score-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:1.5rem; }
+.score-box { padding:1rem; border-radius:10px; }
+.score-box.green { background:#e8f5e9; color:#2e7d32; }
+.score-box.amber { background:#fff3e0; color:#e65100; }
+.score-box.red { background:#ffebee; color:#c62828; }
+.score-num { font-size:1.8rem; font-weight:500; font-family:'DM Serif Display',serif; }
+.score-lbl { font-size:11px; font-weight:500; margin-top:2px; }
+.done-btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.done-btns button { padding:9px 22px; border-radius:8px; border:1px solid var(--border); background:var(--surface); font-family:'DM Sans',sans-serif; font-size:13px; cursor:pointer; transition:all .15s; color:var(--text); }
+.done-btns button.primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+.done-btns button:hover { opacity:.85; }
+
+/* ── DIAGRAMS PAGE ── */
+.diag-page { padding:2rem 1.5rem 3rem; max-width:860px; margin:0 auto; }
+.diag-page h2 { font-family:'DM Serif Display',serif; font-size:1.4rem; font-weight:400; margin-bottom:.4rem; }
+.diag-page .diag-sub { font-size:13px; color:var(--muted); margin-bottom:2rem; font-weight:300; }
+.diag-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:1.5rem; margin-bottom:1.5rem; }
+.diag-card h3 { font-family:'DM Serif Display',serif; font-size:1.1rem; font-weight:400; margin-bottom:.3rem; }
+.diag-card .diag-source { font-size:11px; color:var(--muted); margin-bottom:1.25rem; font-style:italic; }
+
+/* 2x2 matrix */
+.matrix-wrap { overflow-x:auto; }
+.matrix { display:grid; grid-template-columns:80px 1fr 1fr; grid-template-rows:auto 1fr 1fr auto; gap:0; width:100%; min-width:420px; border:1.5px solid var(--border); border-radius:10px; overflow:hidden; }
+.matrix-cell { padding:.9rem .75rem; border:0.5px solid var(--border); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative; }
+.matrix-cell.axis-label { background:var(--bg); font-size:11px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+.matrix-cell.row-label { background:var(--bg); font-size:11px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; line-height:1.4; }
+.matrix-cell.corner { background:var(--bg); }
+.matrix-cell.content { cursor:pointer; transition:background .15s; background:var(--surface); }
+.matrix-cell.content:hover { background:#f0f7f2; }
+.matrix-cell.content.active-cell { background:#e8f0e9; border-color:#2d5a3d; }
+.cell-behavior { font-size:10px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:3px 8px; border-radius:12px; margin-bottom:6px; }
+.cell-behavior.creative { background:#d4edda; color:#1e4228; }
+.cell-behavior.management { background:#e3eef0; color:#0f3d45; }
+.cell-term { font-family:'DM Serif Display',serif; font-size:1rem; color:var(--text); margin-bottom:4px; line-height:1.2; }
+.cell-tap { font-size:10px; color:var(--muted); font-style:italic; }
+.col-headers { display:flex; gap:0; }
+.axis-arrow { display:flex; align-items:center; justify-content:center; gap:4px; font-size:11px; font-weight:500; color:var(--muted); }
+.axis-bottom { grid-column:2/4; background:var(--bg); display:grid; grid-template-columns:1fr 1fr; }
+.axis-bottom-cell { padding:.6rem; text-align:center; font-size:11px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; border-top:0.5px solid var(--border); }
+
+/* detail panel */
+.detail-panel { margin-top:1.25rem; background:var(--accent-light); border:1px solid #b8d4be; border-radius:10px; padding:1.25rem; display:none; }
+.detail-panel.open { display:block; }
+.detail-panel h4 { font-family:'DM Serif Display',serif; font-size:1.1rem; font-weight:400; margin-bottom:.25rem; }
+.detail-panel .dp-cat { font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:.04em; color:var(--accent); margin-bottom:.6rem; }
+.detail-panel .dp-def { font-size:14px; color:var(--text); line-height:1.7; font-weight:300; }
+.detail-panel .dp-actions { margin-top:1rem; display:flex; gap:8px; flex-wrap:wrap; }
+.detail-panel .dp-btn { font-size:12px; padding:6px 14px; border-radius:8px; border:1px solid #2d5a3d; color:#2d5a3d; background:transparent; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s; }
+.detail-panel .dp-btn:hover { background:#2d5a3d; color:#fff; }
+.detail-close { float:right; background:none; border:none; font-size:18px; cursor:pointer; color:var(--muted); line-height:1; margin-top:-2px; }
+
+/* axis label row */
+.matrix-axis-row { grid-column:1/4; background:var(--bg); padding:.5rem; text-align:center; font-size:11px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; border-bottom:0.5px solid var(--border); display:flex; align-items:center; justify-content:center; gap:6px; }
+
+/* ── PROGRESS PAGE ── */
+.prog-page { padding:2rem 1.5rem 3rem; max-width:860px; margin:0 auto; }
+.prog-page h2 { font-family:'DM Serif Display',serif; font-size:1.4rem; font-weight:400; margin-bottom:1.5rem; }
+.summary-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; margin-bottom:2rem; }
+.sum-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1rem; text-align:center; }
+.sum-num { font-family:'DM Serif Display',serif; font-size:2rem; color:var(--text); }
+.sum-lbl { font-size:12px; color:var(--muted); margin-top:4px; }
+.cat-progress { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.25rem; margin-bottom:12px; }
+.cat-progress h4 { font-size:14px; font-weight:500; margin-bottom:12px; }
+.term-row { display:flex; align-items:center; gap:8px; padding:5px 0; border-bottom:1px solid var(--border); }
+.term-row:last-child { border-bottom:none; }
+.term-name { font-size:13px; flex:1; }
+.mastery-label { font-size:11px; font-weight:500; padding:2px 8px; border-radius:20px; }
+.ml-new { background:#f1efe8; color:#444; }
+.ml-learning { background:#fff3e0; color:#e65100; }
+.ml-mastered { background:#e8f5e9; color:#2e7d32; }
+.readiness-section { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.1rem 1.25rem; margin-bottom:10px; }
+.readiness-section h4 { font-size:14px; font-weight:500; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+.readiness-bar-wrap { height:8px; background:var(--border); border-radius:4px; overflow:hidden; margin-bottom:6px; }
+.readiness-bar { height:100%; border-radius:4px; transition:width .4s; }
+.readiness-meta { font-size:11px; color:var(--muted); display:flex; justify-content:space-between; }
+.conf-label { font-size:11px; font-weight:600; padding:2px 8px; border-radius:20px; }
+.conf-0 { background:#f1efe8; color:#666; }
+.conf-1 { background:#fff3e0; color:#e65100; }
+.conf-2 { background:#e8f5e9; color:#2e7d32; }
+.dg-section { background:var(--surface); border:1px solid var(--border); border-radius:12px; margin-bottom:10px; overflow:hidden; }
+.dg-header { padding:1rem 1.25rem; display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none; transition:background .15s; }
+.dg-header:hover { background:var(--bg); }
+.dg-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.dg-title { flex:1; }
+.dg-title h3 { font-size:14px; font-weight:500; color:var(--text); margin-bottom:2px; }
+.dg-title p { font-size:12px; color:var(--muted); font-weight:300; }
+.dg-chevron { color:var(--muted); font-size:18px; transition:transform .2s; line-height:1; }
+.dg-chevron.open { transform:rotate(180deg); }
+.dg-body { display:none; padding:0 1.25rem 1.25rem; }
+.dg-body.open { display:block; }
+.dg-prompts { margin-bottom:1rem; }
+.dg-prompt { display:flex; gap:10px; padding:.6rem 0; border-bottom:1px solid var(--border); align-items:flex-start; }
+.dg-prompt:last-child { border-bottom:none; }
+.dg-prompt-dot { width:6px; height:6px; border-radius:50%; margin-top:6px; flex-shrink:0; }
+.dg-prompt-text { font-size:13px; color:var(--text); line-height:1.65; }
+.dg-concepts-label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:6px; margin-top:1rem; }
+.dg-chips { display:flex; flex-wrap:wrap; gap:6px; }
+.dg-chip { font-size:11px; padding:3px 10px; border-radius:20px; cursor:pointer; transition:opacity .15s; font-family:'DM Sans',sans-serif; }
+.dg-chip:hover { opacity:.75; }
+.reset-btn { padding:7px 16px; border-radius:8px; border:1px solid #e57373; background:transparent; color:#c62828; font-family:'DM Sans',sans-serif; font-size:12px; cursor:pointer; margin-top:1rem; }
+.reset-btn:hover { background:#ffebee; }
+
+/* color classes */
+.cat-lc{background:var(--lc-bg);color:var(--lc-text)} .cat-kp{background:var(--kp-bg);color:var(--kp-text)}
+.cat-tp{background:var(--tp-bg);color:var(--tp-text)} .cat-lb{background:var(--lb-bg);color:var(--lb-text)}
+.cat-cp{background:var(--cp-bg);color:var(--cp-text)} .cat-ct{background:var(--ct-bg);color:var(--ct-text)}
+.cat-dt{background:var(--dt-bg);color:var(--dt-text)} .cat-dp{background:var(--dp-bg);color:var(--dp-text)}
+.cat-cv{background:var(--cv-bg);color:var(--cv-text)} .cat-wc{background:var(--wc-bg);color:var(--wc-text)}
+.cat-cog{background:var(--cog-bg);color:var(--cog-text)} .cat-aff{background:var(--aff-bg);color:var(--aff-text)}
+.cat-meta{background:#f3e8ff;color:#4a1580} .cat-tool{background:#e8f0e9;color:#1a3d28}
+
+.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+.tool-card-header{padding:.85rem 1.1rem;font-size:14px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px;}
+.tool-type-badge{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:20px;}
+.badge-div{background:#e8eef8;color:#1a3060;}
+.badge-con{background:#e8f5e9;color:#1b5e20;}
+.badge-meta{background:#f3e8ff;color:#4a1580;}
+.badge-int{background:#fff3e0;color:#e65100;}
+.tool-body{padding:.85rem 1.1rem;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.tool-body-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:4px;}
+.tool-body-text{font-size:13px;color:var(--text);line-height:1.65;}
+.step-btn{font-size:12px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;white-space:nowrap;transition:all .15s;}
+.step-btn:hover{border-color:var(--accent);color:var(--accent);}
+.step-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+@media(max-width:600px){.tool-body{grid-template-columns:1fr;}}
+@media(max-width:600px){
+  .nav-brand { font-size:1rem; padding-right:1rem; }
+  .nav-tab span { display:none; }
+  .ref-grid { padding:.75rem 1rem 3rem; }
+  .quiz-wrap { padding:1rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Creative Problem Solving Guide</div>
+  <button class="nav-tab active" onclick="showPage('ref')" id="tab-ref">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <span>Vocabulary</span>
+  </button>
+  <button class="nav-tab" onclick="showPage('quiz')" id="tab-quiz">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 9v6M9 12h6"/></svg>
+    <span>Flashcards</span>
+  </button>
+  <button class="nav-tab" onclick="showPage('diagrams')" id="tab-diagrams">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg>
+    <span>Diagrams</span>
+  </button>
+  <button class="nav-tab" onclick="showPage('tools')" id="tab-tools">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    <span>Tools</span>
+  </button>
+  <button class="nav-tab" onclick="showPage('methods')" id="tab-methods">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h8M4 18h8"/><circle cx="17" cy="17" r="3"/><path d="m21 21-1.5-1.5"/></svg>
+    <span>Methods</span>
+  </button>
+  <div class="nav-right">
+    <div class="streak-badge" id="streak-badge">🔥 <span id="streak-num">0</span> day streak</div>
+  </div>
+</nav>
+
+<!-- ═══════════════ REFERENCE PAGE ═══════════════ -->
+<div class="page active" id="page-ref">
+  <div class="ref-controls">
+    <div class="search-wrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="ref-search" placeholder="Search terms or definitions…" oninput="renderRef()">
+    </div>
+    <button class="filter-btn active" data-cat="all" onclick="setRefFilter('all')">All</button>
+    <button class="filter-btn" data-cat="CPS" onclick="setRefFilter('CPS')">CPS</button>
+    <button class="filter-btn" data-cat="Leadership Types" onclick="setRefFilter('Leadership Types')">Leadership Types</button>
+    <button class="filter-btn" data-cat="Problem Type & Leader Response" onclick="setRefFilter('Problem Type & Leader Response')">Problem Type &amp; Leader Response</button>
+    <button class="filter-btn" data-cat="Divergent" onclick="setRefFilter('Divergent')">Divergent</button>
+    <button class="filter-btn" data-cat="Convergent" onclick="setRefFilter('Convergent')">Convergent</button>
+    <button class="filter-btn" data-cat="Cognitive Thinking Skills" onclick="setRefFilter('Cognitive Thinking Skills')">Cognitive Skills</button>
+    <button class="filter-btn" data-cat="Affective Skills" onclick="setRefFilter('Affective Skills')">Affective Skills</button>
+    <div class="view-toggle">
+      <button class="view-btn active" id="vbtn-grid" onclick="setView('grid')" title="Card view">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </button>
+      <button class="view-btn" id="vbtn-compact" onclick="setView('compact')" title="Compact view">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="stats-bar" id="ref-stats"></div>
+  <div class="ref-grid" id="ref-grid"></div>
+</div>
+
+<!-- ═══════════════ FLASHCARD PAGE ═══════════════ -->
+<div class="page" id="page-quiz">
+  <div class="quiz-wrap">
+    <div class="quiz-header">
+      <h2>Flashcards</h2>
+      <div class="quiz-options">
+        <button class="quiz-opt active" data-deck="all" onclick="setDeck('all')">All terms</button>
+        <button class="quiz-opt" data-deck="weak" onclick="setDeck('weak')">Needs work</button>
+        <button class="quiz-opt" data-deck="shuffle" onclick="setDeck('shuffle')">🔀 Shuffle</button>
+      </div>
+    </div>
+
+    <div id="quiz-main">
+      <div class="progress-row">
+        <div class="prog-bar-wrap"><div class="prog-bar" id="fc-prog-bar" style="width:0%"></div></div>
+        <div class="prog-label" id="fc-prog-label">0 / 0</div>
+      </div>
+
+      <div class="fc-scene" id="fc-scene" tabindex="0" onclick="flipCard()" onkeydown="if(event.key===' '||event.key==='Enter')flipCard()">
+        <div class="fc-card" id="fc-card">
+          <div class="fc-front">
+            <div class="fc-label">Term</div>
+            <div class="fc-term" id="fc-term">—</div>
+            <div class="fc-cat" id="fc-cat-front"></div>
+            <div class="fc-hint">Click or press <b>Space</b> to reveal definition</div>
+          </div>
+          <div class="fc-back">
+            <div class="fc-label">Definition</div>
+            <div class="fc-def" id="fc-def">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rating-row hidden" id="rating-row">
+        <button class="rate-btn missed" onclick="rateCard(0)"><span class="emoji">😕</span>Missed it</button>
+        <button class="rate-btn almost" onclick="rateCard(1)"><span class="emoji">🤔</span>Almost</button>
+        <button class="rate-btn gotit" onclick="rateCard(2)"><span class="emoji">✅</span>Got it!</button>
+      </div>
+
+      <div class="fc-nav">
+        <button onclick="prevCard()" id="fc-prev">← Prev</button>
+        <button onclick="nextCard()" id="fc-next">Next →</button>
+      </div>
+    </div>
+
+    <div id="session-done" style="display:none">
+      <div class="session-done">
+        <h3>Session complete! 🎉</h3>
+        <p>Here's how you did on this round:</p>
+        <div class="score-grid">
+          <div class="score-box green"><div class="score-num" id="done-got">0</div><div class="score-lbl">Got it</div></div>
+          <div class="score-box amber"><div class="score-num" id="done-almost">0</div><div class="score-lbl">Almost</div></div>
+          <div class="score-box red"><div class="score-num" id="done-missed">0</div><div class="score-lbl">Missed</div></div>
+        </div>
+        <div class="done-btns">
+          <button onclick="restartDeck()">Restart deck</button>
+          <button onclick="studyWeak()" id="study-weak-btn">Study missed &amp; almost</button>
+          <button class="primary" onclick="showPage('progress')">See progress →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ DIAGRAMS PAGE ═══════════════ -->
+<div class="page" id="page-diagrams">
+  <div class="diag-page">
+    <h2>Diagrams</h2>
+    <p class="diag-sub">Visual models from the text. Click any cell to explore the term and its definition.</p>
+
+    <div class="diag-card">
+      <h3>Figure 2.1 — Types of Problems</h3>
+      <p class="diag-source">Source: Puccio, Mance, &amp; Murdock (2010)</p>
+
+      <div class="matrix-wrap">
+        <div class="matrix">
+          <!-- top axis label -->
+          <div class="matrix-cell corner"></div>
+          <div class="matrix-axis-row" style="grid-column:2/4;grid-row:1;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Nature of the Problem
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+
+          <!-- row label: Heuristic -->
+          <div class="matrix-cell row-label" style="grid-column:1;grid-row:2;">
+            <div style="writing-mode:vertical-lr;transform:rotate(180deg);line-height:1.4;">Heuristic</div>
+          </div>
+          <!-- Predicament cell -->
+          <div class="matrix-cell content" id="cell-predicament" onclick="openDetail('Predicament')" style="grid-column:2;grid-row:2;">
+            <span class="cell-behavior" style="background:#f0e8f8;color:#4a1580;">Creative Management</span>
+            <div class="cell-term">Predicament</div>
+            <div class="cell-tap">tap to explore</div>
+          </div>
+          <!-- Opportunity cell -->
+          <div class="matrix-cell content" id="cell-opportunity" onclick="openDetail('Opportunity')" style="grid-column:3;grid-row:2;">
+            <span class="cell-behavior creative">Creative Leadership</span>
+            <div class="cell-term">Opportunity</div>
+            <div class="cell-tap">tap to explore</div>
+          </div>
+
+          <!-- row label: Algorithmic -->
+          <div class="matrix-cell row-label" style="grid-column:1;grid-row:3;">
+            <div style="writing-mode:vertical-lr;transform:rotate(180deg);line-height:1.4;">Algorithmic</div>
+          </div>
+          <!-- Formulaic cell -->
+          <div class="matrix-cell content" id="cell-formulaic" onclick="openDetail('Formulaic')" style="grid-column:2;grid-row:3;">
+            <span class="cell-behavior management" style="background:#e3eef0;color:#0f3d45;">Management</span>
+            <div class="cell-term">Formulaic</div>
+            <div class="cell-tap">tap to explore</div>
+          </div>
+          <!-- Maintenance cell -->
+          <div class="matrix-cell content" id="cell-maintenance" onclick="openDetail('Maintenance')" style="grid-column:3;grid-row:3;">
+            <span class="cell-behavior management" style="background:#e3eef0;color:#0f3d45;">Management</span>
+            <div class="cell-term">Maintenance</div>
+            <div class="cell-tap">tap to explore</div>
+          </div>
+
+          <!-- bottom axis -->
+          <div class="matrix-cell corner" style="grid-column:1;grid-row:4;"></div>
+          <div class="axis-bottom-cell" style="grid-column:2;grid-row:4;border-top:0.5px solid var(--border);background:var(--bg);padding:.6rem;text-align:center;font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">
+            ← Reactive
+          </div>
+          <div class="axis-bottom-cell" style="grid-column:3;grid-row:4;border-top:0.5px solid var(--border);background:var(--bg);padding:.6rem;text-align:center;font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">
+            Proactive →
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:.5rem;font-weight:500;text-transform:uppercase;letter-spacing:.04em;">Approach to the Problem</div>
+
+      <!-- detail panel -->
+      <div class="detail-panel" id="diag-detail">
+        <button class="detail-close" onclick="closeDetail()">×</button>
+        <div class="dp-cat" id="dp-cat"></div>
+        <h4 id="dp-term"></h4>
+        <div class="dp-def" id="dp-def"></div>
+        <div class="dp-actions">
+          <button class="dp-btn" onclick="goFlashcard()">Study this term in flashcards →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE 4.1 -->
+    <div class="diag-card">
+      <h3>Table 4.1 — Cognitive Thinking Skills Associated With CPS</h3>
+      <p class="diag-source">Source: Puccio, Murdock, &amp; Mance (2005). Reprinted with permission.</p>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:480px;font-size:13px;">
+          <thead>
+            <tr>
+              <th style="background:#e8eaf6;color:#1a237e;padding:10px 12px;text-align:left;border:0.5px solid var(--border);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;">Step</th>
+              <th style="background:#e8eaf6;color:#1a237e;padding:10px 12px;text-align:left;border:0.5px solid var(--border);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;">Purpose</th>
+              <th style="background:#e8eaf6;color:#1a237e;padding:10px 12px;text-align:left;border:0.5px solid var(--border);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;">Thinking Skill</th>
+              <th style="background:#e8eaf6;color:#1a237e;padding:10px 12px;text-align:left;border:0.5px solid var(--border);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;">Description</th>
+            </tr>
+          </thead>
+          <tbody id="cog-table-body"></tbody>
+        </table>
+      </div>
+      <div class="detail-panel" id="diag-detail-cog">
+        <button class="detail-close" onclick="closeDetailById('diag-detail-cog')">×</button>
+        <div class="dp-cat" id="dp-cat-cog"></div>
+        <h4 id="dp-term-cog"></h4>
+        <div class="dp-def" id="dp-def-cog"></div>
+        <div class="dp-actions">
+          <button class="dp-btn" onclick="goFlashcardTerm(currentCogTerm)">Study this term in flashcards →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE 4.2 -->
+    <div class="diag-card">
+      <h3>Table 4.2 — Affective Skills Associated With CPS</h3>
+      <p class="diag-source">Source: Puccio, Mance, &amp; Murdock (2010). Reprinted with permission.</p>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:480px;font-size:13px;">
+          <thead>
+            <tr>
+              <th style="background:#fce4ec;color:#880e4f;padding:10px 12px;text-align:left;border:0.5px solid var(--border);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;">Step</th>
+              <th style="background:#fce4ec;color:#880e4f;padding:10px 12px;text-align:left;border:0.5px solid var(--border);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;">Purpose</th>
+              <th style="background:#fce4ec;color:#880e4f;padding:10px 12px;text-align:left;border:0.5px solid var(--border);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;">Affective Skill</th>
+              <th style="background:#fce4ec;color:#880e4f;padding:10px 12px;text-align:left;border:0.5px solid var(--border);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;">Description</th>
+            </tr>
+          </thead>
+          <tbody id="aff-table-body"></tbody>
+        </table>
+      </div>
+      <div class="detail-panel" id="diag-detail-aff">
+        <button class="detail-close" onclick="closeDetailById('diag-detail-aff')">×</button>
+        <div class="dp-cat" id="dp-cat-aff"></div>
+        <h4 id="dp-term-aff"></h4>
+        <div class="dp-def" id="dp-def-aff"></div>
+        <div class="dp-actions">
+          <button class="dp-btn" onclick="goFlashcardTerm(currentAffTerm)">Study this term in flashcards →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FIGURE 6.1–12.1: Single CPS Circle -->
+    <div class="diag-card">
+      <h3>Figures 6.1–12.1 — The CPS Process</h3>
+      <p class="diag-source">Source: Puccio, Murdock &amp; Mance (2005). Reprinted with permission.</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">Click any step or the center to see its phase, cognitive skill, and affective skill.</p>
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
+
+        <!-- SVG Circle: pie slices + diamonds -->
+        <svg viewBox="0 0 500 500" width="100%" style="max-width:440px;display:block;" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="cps-clip">
+              <circle cx="250" cy="250" r="220"/>
+            </clipPath>
+          </defs>
+
+          <!-- All slices clipped to the circle so no color bleeds outside -->
+
+          <!-- Clarification: top slice (blue) — large arc over the top, clipped -->
+          <path d="M250,250 L59.5,140 A220,220 0 1,1 440.5,140 Z" fill="#dce8f8" stroke="#fff" stroke-width="2.5" clip-path="url(#cps-clip)"/>
+
+          <!-- Transformation: bottom-right slice (green), clipped -->
+          <path d="M250,250 L440.5,140 A220,220 0 0,1 250,470 Z" fill="#d4f0e2" stroke="#fff" stroke-width="2.5" clip-path="url(#cps-clip)"/>
+
+          <!-- Implementation: bottom-left slice (amber), clipped -->
+          <path d="M250,250 L250,470 A220,220 0 0,1 59.5,140 Z" fill="#fef3cd" stroke="#fff" stroke-width="2.5" clip-path="url(#cps-clip)"/>
+
+          <!-- Outer border -->
+          <circle cx="250" cy="250" r="220" fill="none" stroke="#ccc" stroke-width="1.5"/>
+
+          <!-- Phase labels centered in each slice at ~62% radius -->
+          <!-- Clarification midpoint at 0° (top): (250, 113.6) -->
+          <text x="250" y="110" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="#1a3060" font-style="italic">Clarification</text>
+
+          <!-- Transformation midpoint at 120°: (368, 318) — between right and bottom-right diamonds -->
+          <text x="368" y="314" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1a4a2e" font-style="italic">Transformation</text>
+
+          <!-- Implementation midpoint at 240°: (132, 318) — between bottom-left and left diamonds -->
+          <text x="132" y="314" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#5c3a00" font-style="italic">Implementation</text>
+
+          <!-- White center hole -->
+          <circle cx="250" cy="250" r="68" fill="#ffffff" stroke="#e0dbd3" stroke-width="1.5"/>
+
+          <!-- Assessing the Situation: center -->
+          <g id="fig-step-situation" class="fig-step" onclick="figOpenStep('Assessing the Situation')" style="cursor:pointer;">
+            <circle id="fig-center-circle" cx="250" cy="250" r="62" fill="#ffffff" stroke="#2d5a3d" stroke-width="2"/>
+            <text x="250" y="242" text-anchor="middle" font-family="DM Serif Display,serif" font-size="10" fill="#1a3d28">Assessing</text>
+            <text x="250" y="254" text-anchor="middle" font-family="DM Serif Display,serif" font-size="10" fill="#1a3d28">the</text>
+            <text x="250" y="266" text-anchor="middle" font-family="DM Serif Display,serif" font-size="10" fill="#1a3d28">Situation</text>
+            <text x="250" y="280" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="7.5" fill="#7a776f" font-style="italic">tap to explore</text>
+          </g>
+
+          <!-- Clarification: Exploring the Vision (top-left) -->
+          <g id="fig-step-vision" class="fig-step" onclick="figOpenStep('Exploring the Vision')" style="cursor:pointer;">
+            <polygon points="148,92 192,126 148,160 104,126" fill="#c8d8f8" stroke="#2a4a90" stroke-width="1.5" class="fig-diamond"/>
+            <text x="148" y="120" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9.5" fill="#1a3060" font-weight="600">Exploring</text>
+            <text x="148" y="133" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9.5" fill="#1a3060" font-weight="600">the Vision</text>
+          </g>
+
+          <!-- Clarification: Formulating Challenges (top-right) -->
+          <g id="fig-step-challenges" class="fig-step" onclick="figOpenStep('Formulating Challenges')" style="cursor:pointer;">
+            <polygon points="352,92 396,126 352,160 308,126" fill="#c8d8f8" stroke="#2a4a90" stroke-width="1.5" class="fig-diamond"/>
+            <text x="352" y="120" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9.5" fill="#1a3060" font-weight="600">Formulating</text>
+            <text x="352" y="133" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9.5" fill="#1a3060" font-weight="600">Challenges</text>
+          </g>
+
+          <!-- Transformation: Exploring Ideas (right) -->
+          <g id="fig-step-ideas" class="fig-step" onclick="figOpenStep('Exploring Ideas')" style="cursor:pointer;">
+            <polygon points="420,216 460,250 420,284 380,250" fill="#b6efd0" stroke="#1a6640" stroke-width="1.5" class="fig-diamond"/>
+            <text x="420" y="244" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9.5" fill="#1a4a2e" font-weight="600">Exploring</text>
+            <text x="420" y="257" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9.5" fill="#1a4a2e" font-weight="600">Ideas</text>
+          </g>
+
+          <!-- Transformation: Formulating Solutions (bottom-right) -->
+          <g id="fig-step-solutions" class="fig-step" onclick="figOpenStep('Formulating Solutions')" style="cursor:pointer;">
+            <polygon points="352,352 396,386 352,420 308,386" fill="#b6efd0" stroke="#1a6640" stroke-width="1.5" class="fig-diamond"/>
+            <text x="352" y="380" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9.5" fill="#1a4a2e" font-weight="600">Formulating</text>
+            <text x="352" y="393" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9.5" fill="#1a4a2e" font-weight="600">Solutions</text>
+          </g>
+
+          <!-- Implementation: Exploring Acceptance (bottom-left) -->
+          <g id="fig-step-acceptance" class="fig-step" onclick="figOpenStep('Exploring Acceptance')" style="cursor:pointer;">
+            <polygon points="148,352 192,386 148,420 104,386" fill="#fde9a0" stroke="#9a6200" stroke-width="1.5" class="fig-diamond"/>
+            <text x="148" y="380" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9.5" fill="#5c3a00" font-weight="600">Exploring</text>
+            <text x="148" y="393" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9.5" fill="#5c3a00" font-weight="600">Acceptance</text>
+          </g>
+
+          <!-- Implementation: Formulating a Plan (left) -->
+          <g id="fig-step-plan" class="fig-step" onclick="figOpenStep('Formulating a Plan')" style="cursor:pointer;">
+            <polygon points="80,216 120,250 80,284 40,250" fill="#fde9a0" stroke="#9a6200" stroke-width="1.5" class="fig-diamond"/>
+            <text x="80" y="244" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9.5" fill="#5c3a00" font-weight="600">Formulating</text>
+            <text x="80" y="257" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9.5" fill="#5c3a00" font-weight="600">a Plan</text>
+          </g>
+
+          <style>
+            .fig-diamond { transition: opacity .15s; }
+            .fig-step:hover .fig-diamond { opacity: .75; }
+            .fig-step:hover #fig-center-circle { stroke-width: 3; }
+            .fig-step.fig-active .fig-diamond { stroke-width: 3 !important; filter: drop-shadow(0 2px 6px rgba(0,0,0,.2)); }
+            .fig-step.fig-active #fig-center-circle { stroke: #1a3d28; stroke-width: 3; fill: #e8f0e9; }
+          </style>
+        </svg>
+
+        <!-- Legend -->
+        <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);">
+            <span style="width:14px;height:14px;border-radius:3px;background:#dce8f8;border:1.5px solid #2a4a90;display:inline-block;"></span>Clarification
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);">
+            <span style="width:14px;height:14px;border-radius:3px;background:#d4f0e2;border:1.5px solid #1a6640;display:inline-block;"></span>Transformation
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);">
+            <span style="width:14px;height:14px;border-radius:3px;background:#fef3cd;border:1.5px solid #9a6200;display:inline-block;"></span>Implementation
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);">
+            <span style="width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid #2d5a3d;display:inline-block;"></span>Executive Step
+          </div>
+        </div>
+
+        <!-- Detail panel -->
+        <div id="fig-detail" style="display:none;width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
+            <div>
+              <span id="fig-phase-badge" style="display:inline-block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 10px;border-radius:20px;margin-bottom:6px;"></span>
+              <div id="fig-step-name" style="font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--text);"></div>
+              <div id="fig-step-purpose" style="font-size:13px;color:var(--muted);margin-top:4px;line-height:1.6;max-width:560px;"></div>
+            </div>
+            <button onclick="figCloseDetail()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);padding:0 0 0 12px;line-height:1;">×</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="background:#e8eaf6;border-radius:10px;padding:1rem;">
+              <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#1a237e;margin-bottom:5px;">Cognitive Thinking Skill</div>
+              <div id="fig-cog-name" style="font-size:14px;font-weight:500;color:#1a237e;margin-bottom:5px;"></div>
+              <div id="fig-cog-def" style="font-size:12px;color:#3949ab;line-height:1.6;"></div>
+              <button id="fig-cog-btn" style="margin-top:8px;font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid #3949ab;color:#1a237e;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;">Study →</button>
+            </div>
+            <div style="background:#fce4ec;border-radius:10px;padding:1rem;">
+              <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#880e4f;margin-bottom:5px;">Affective Skill</div>
+              <div id="fig-aff-name" style="font-size:14px;font-weight:500;color:#880e4f;margin-bottom:5px;"></div>
+              <div id="fig-aff-def" style="font-size:12px;color:#ad1457;line-height:1.6;"></div>
+              <button id="fig-aff-btn" style="margin-top:8px;font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid #ad1457;color:#880e4f;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;">Study →</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TABLE 6.5: Key Word Search -->
+    <div class="diag-card">
+      <h3>Table 6.5 — Key Word Search</h3>
+      <p class="diag-source">Use the verbs in your task statement to identify which CPS step to go to next. Source: Puccio, Murdock, &amp; Mance (2005). Reprinted with permission.</p>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:320px;font-size:13px;">
+          <thead>
+            <tr>
+              <th style="background:#3a7a52;color:#fff;padding:10px 14px;text-align:left;border:0.5px solid var(--border);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;">CPS Step</th>
+              <th style="background:#3a7a52;color:#fff;padding:10px 14px;text-align:left;border:0.5px solid var(--border);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;">Key Verbs — if you find yourself using these words, go to this step</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#dce8f8;">
+              <td style="padding:9px 14px;border:0.5px solid var(--border);font-weight:600;font-size:13px;color:#1a3060;white-space:nowrap;">Exploring the Vision</td>
+              <td style="padding:9px 14px;border:0.5px solid var(--border);color:#1a3060;font-size:13px;line-height:1.6;">Picture, dream, look at, forecast, contemplate, see, speculate, ponder, wonder about</td>
+            </tr>
+            <tr style="background:#dce8f8;">
+              <td style="padding:9px 14px;border:0.5px solid var(--border);font-weight:600;font-size:13px;color:#1a3060;white-space:nowrap;">Formulating Challenges</td>
+              <td style="padding:9px 14px;border:0.5px solid var(--border);color:#1a3060;font-size:13px;line-height:1.6;">Clarify, untangle, explicate, define, decipher, clear up, uncover, discern why</td>
+            </tr>
+            <tr style="background:#d4f0e2;">
+              <td style="padding:9px 14px;border:0.5px solid var(--border);font-weight:600;font-size:13px;color:#1a4a2e;white-space:nowrap;">Exploring Ideas</td>
+              <td style="padding:9px 14px;border:0.5px solid var(--border);color:#1a4a2e;font-size:13px;line-height:1.6;">Come up with, invent, break through, originate, innovate, hatch, fashion, think up, find a way, make up, design a way</td>
+            </tr>
+            <tr style="background:#d4f0e2;">
+              <td style="padding:9px 14px;border:0.5px solid var(--border);font-weight:600;font-size:13px;color:#1a4a2e;white-space:nowrap;">Formulating Solutions</td>
+              <td style="padding:9px 14px;border:0.5px solid var(--border);color:#1a4a2e;font-size:13px;line-height:1.6;">Develop, elaborate, expand, evaluate, flesh out, strengthen, refine, analyze, maximize, build on</td>
+            </tr>
+            <tr style="background:#fef3cd;">
+              <td style="padding:9px 14px;border:0.5px solid var(--border);font-weight:600;font-size:13px;color:#5c3a00;white-space:nowrap;">Exploring Acceptance</td>
+              <td style="padding:9px 14px;border:0.5px solid var(--border);color:#5c3a00;font-size:13px;line-height:1.6;">Sell, convince, market, promote, leverage, influence, persuade, pitch, position, introduce, advocate, popularize, recommend</td>
+            </tr>
+            <tr style="background:#fef3cd;">
+              <td style="padding:9px 14px;border:0.5px solid var(--border);font-weight:600;font-size:13px;color:#5c3a00;white-space:nowrap;">Formulating a Plan</td>
+              <td style="padding:9px 14px;border:0.5px solid var(--border);color:#5c3a00;font-size:13px;line-height:1.6;">Execute, implement, do, script, orchestrate, devise, plot, outline, organize, rollout, sequence, act, carry out</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TABLE 6.6: If-Then Process Analysis -->
+    <div class="diag-card">
+      <h3>Table 6.6 — If-Then Process Analysis</h3>
+      <p class="diag-source">Use this to locate where you are in the CPS process. Source: Based on Miller et al. (2001).</p>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:380px;font-size:13px;">
+          <thead>
+            <tr>
+              <th style="background:#3a7a52;color:#fff;padding:10px 14px;text-align:left;border:0.5px solid var(--border);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;width:60%;">If…</th>
+              <th style="background:#3a7a52;color:#fff;padding:10px 14px;text-align:left;border:0.5px solid var(--border);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;">Then…</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#dce8f8;">
+              <td style="padding:10px 14px;border:0.5px solid var(--border);color:#1a3060;font-size:13px;line-height:1.65;font-style:italic;">You need to establish the goal or the desired outcome of your efforts…</td>
+              <td style="padding:10px 14px;border:0.5px solid var(--border);font-weight:600;font-size:13px;color:#1a3060;white-space:nowrap;">Go to Exploring the Vision</td>
+            </tr>
+            <tr style="background:#dce8f8;">
+              <td style="padding:10px 14px;border:0.5px solid var(--border);color:#1a3060;font-size:13px;line-height:1.65;font-style:italic;">You need to identify the obstacles or barriers that need to be addressed to achieve the desired outcome…</td>
+              <td style="padding:10px 14px;border:0.5px solid var(--border);font-weight:600;font-size:13px;color:#1a3060;white-space:nowrap;">Go to Formulating Challenges</td>
+            </tr>
+            <tr style="background:#d4f0e2;">
+              <td style="padding:10px 14px;border:0.5px solid var(--border);color:#1a4a2e;font-size:13px;line-height:1.65;font-style:italic;">You have identified a specific challenge that, if overcome, will move you in the direction of your desired outcome but do not know how to address this challenge…</td>
+              <td style="padding:10px 14px;border:0.5px solid var(--border);font-weight:600;font-size:13px;color:#1a4a2e;white-space:nowrap;">Go to Exploring Ideas</td>
+            </tr>
+            <tr style="background:#d4f0e2;">
+              <td style="padding:10px 14px;border:0.5px solid var(--border);color:#1a4a2e;font-size:13px;line-height:1.65;font-style:italic;">You have ideas that need to be transformed into workable solutions to overcome a challenge…</td>
+              <td style="padding:10px 14px;border:0.5px solid var(--border);font-weight:600;font-size:13px;color:#1a4a2e;white-space:nowrap;">Go to Formulating Solutions</td>
+            </tr>
+            <tr style="background:#fef3cd;">
+              <td style="padding:10px 14px;border:0.5px solid var(--border);color:#5c3a00;font-size:13px;line-height:1.65;font-style:italic;">You have solutions or a proposed change you wish to carry forward and want to ensure the environment will support your thinking…</td>
+              <td style="padding:10px 14px;border:0.5px solid var(--border);font-weight:600;font-size:13px;color:#5c3a00;white-space:nowrap;">Go to Exploring Acceptance</td>
+            </tr>
+            <tr style="background:#fef3cd;">
+              <td style="padding:10px 14px;border:0.5px solid var(--border);color:#5c3a00;font-size:13px;line-height:1.65;font-style:italic;">You have solutions or a proposed change and you are not sure what steps need to be taken, and in what sequence, to implement your thinking…</td>
+              <td style="padding:10px 14px;border:0.5px solid var(--border);font-weight:600;font-size:13px;color:#5c3a00;white-space:nowrap;">Go to Formulating a Plan</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="page" id="page-methods">
+  <div style="max-width:960px;margin:0 auto;padding:2rem 1.5rem 3rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:1.25rem;">
+      <div>
+        <h2 style="font-family:'DM Serif Display',serif;font-size:1.4rem;font-weight:400;margin-bottom:2px;">Workshop Methods</h2>
+        <p style="font-size:13px;color:var(--muted);font-weight:300;">Activities and methods for facilitating workshops.</p>
+      </div>
+      <button onclick="openMethodModal()" style="padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">+ Add Method</button>
+    </div>
+
+    <!-- Search and filter -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;align-items:center;">
+      <div class="search-wrap" style="min-width:200px;flex:1;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="methods-search" placeholder="Search methods…" oninput="renderMethods()" style="width:100%;padding:7px 12px 7px 32px;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--bg);color:var(--text);outline:none;">
+      </div>
+      <div id="methods-cat-btns" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+    </div>
+
+    <div class="stats-bar" id="methods-stats"></div>
+    <div id="methods-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:.75rem;"></div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div id="method-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;align-items:center;justify-content:center;">
+    <div style="background:var(--surface);border-radius:14px;padding:1.5rem;width:90%;max-width:520px;max-height:90vh;overflow-y:auto;">
+      <h3 id="modal-title" style="font-family:'DM Serif Display',serif;font-size:1.2rem;font-weight:400;margin-bottom:1.25rem;">Add Method</h3>
+      <div style="margin-bottom:1rem;">
+        <label style="font-size:12px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px;">Name</label>
+        <input id="modal-name" type="text" placeholder="Method name" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;background:var(--bg);color:var(--text);">
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="font-size:12px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px;">Category</label>
+        <select id="modal-cat" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;background:var(--bg);color:var(--text);">
+          <option value="Energizers">Energizers</option>
+          <option value="Team Building & Culture">Team Building & Culture</option>
+          <option value="Ideation & Brainstorming">Ideation & Brainstorming</option>
+          <option value="Prioritization & Decision Making">Prioritization & Decision Making</option>
+          <option value="Vision & Strategy">Vision & Strategy</option>
+          <option value="Planning & Action">Planning & Action</option>
+          <option value="Reflection & Feedback">Reflection & Feedback</option>
+          <option value="Insights & Research">Insights & Research</option>
+        </select>
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-size:12px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px;">Description</label>
+        <textarea id="modal-desc" rows="4" placeholder="What is this method and why use it?" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;background:var(--bg);color:var(--text);resize:vertical;line-height:1.6;"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button onclick="closeMethodModal()" style="padding:8px 18px;border:1px solid var(--border);background:transparent;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;color:var(--text);">Cancel</button>
+        <button onclick="saveMethod()" style="padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-tools">
+  <div style="max-width:860px;margin:0 auto;padding:2rem 1.5rem 3rem;">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.4rem;font-weight:400;margin-bottom:.3rem;">Tools</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:1.5rem;">Divergent, convergent, and metacognitive tools for each CPS step.</p>
+
+    <!-- Step selector -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;" id="tools-step-btns"></div>
+
+    <!-- Tools display area -->
+    <div id="tools-display"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const TERMS = [
+  {cat:"Leadership and Creativity",cc:"cat-lc",term:"Creativity",def:"Making a change that sticks (for a while) (Talbot, 1997); the production of original ideas that serve some purpose."},
+  {cat:"Leadership and Creativity",cc:"cat-lc",term:"Creative Change",def:"The adoption of a creative product, a novel and useful idea, which has been embodied in either an intangible or tangible form, that adds value to an individual, team, organization, or society."},
+  {cat:"Leadership and Creativity",cc:"cat-lc",term:"Creative Leadership",def:"The ability to deliberately engage one's imagination to define and guide a group toward a novel goal — a direction that is new for the group, with a profoundly positive influence on their context and the individuals in that situation."},
+  {cat:"Leadership and Creativity",cc:"cat-lc",term:"Transformational Leadership",def:"A process in which an individual engages with others and creates a connection that raises the level of motivation and morality in both the leader and the follower (Northouse, 2010, p. 172)."},
+  {cat:"Kouzes & Posner Leadership Practices",cc:"cat-kp",term:"Challenging the Process",def:"Looking for innovative ways to improve the organization; includes Search for Opportunities and Experiment and Take Risks."},
+  {cat:"Kouzes & Posner Leadership Practices",cc:"cat-kp",term:"Inspiring a Shared Vision",def:"Envisioning the future, creating an ideal image of what the organization can become; includes Envision the Future and Enlist Others."},
+  {cat:"Kouzes & Posner Leadership Practices",cc:"cat-kp",term:"Enabling Others to Act",def:"Building spirited teams; includes Foster Collaboration and Strengthen Others."},
+  {cat:"Kouzes & Posner Leadership Practices",cc:"cat-kp",term:"Modeling the Way",def:"Establishing principles for how people will be treated and how goals will be pursued; includes Set the Example and Achieve Small Wins."},
+  {cat:"Kouzes & Posner Leadership Practices",cc:"cat-kp",term:"Encouraging the Heart",def:"Making people feel like heroes; includes Recognizing Contributions and Celebrate Accomplishments."},
+  {cat:"Types of Problems",cc:"cat-tp",term:"Formulaic",def:"A situation in which something changes or breaks down, and by simply following a process or formula, the situation can be corrected."},
+  {cat:"Types of Problems",cc:"cat-tp",term:"Maintenance",def:"A situation in which one anticipates a future change that will negatively impact performance, and a known procedure or solution can be used to avoid any negative consequences associated with this change."},
+  {cat:"Types of Problems",cc:"cat-tp",term:"Predicament",def:"A difficult, complicated, or perplexing situation for which a new approach must be devised to return to former levels of performance."},
+  {cat:"Types of Problems",cc:"cat-tp",term:"Opportunity",def:"A favorable juncture of circumstances in which you decide to actively pursue some desirable possibility."},
+  {cat:"Leader Behaviors",cc:"cat-lb",term:"Management",def:"A process that focuses on using standard procedures to sustain the present situation."},
+  {cat:"Leader Behaviors",cc:"cat-lb",term:"Creative Management",def:"A process in which the leader applies creative thinking to develop original solutions that result in the situation returning to prior levels of performance."},
+  {cat:"Leader Behaviors",cc:"cat-lb",term:"Creative Leadership",def:"A process in which a leader deliberately engages his or her imagination to define and guide a group toward a novel goal — a direction that is new for the group."},
+  {cat:"Creative Problem Solving Terms",cc:"cat-cp",term:"Creative Problem Solving (CPS)",def:"A comprehensive cognitive and affective system built on our natural creative processes that deliberately ignites creative thinking and, as a result, generates creative solutions and change."},
+  {cat:"Creative Problem Solving Terms",cc:"cat-cp",term:"Process",def:"A particular method of doing something, generally involving a number of steps or operations."},
+  {cat:"Creative Problem Solving Terms",cc:"cat-cp",term:"Metacognition",def:"An individual's ability to monitor and control his or her own cognitive processes."},
+  {cat:"Creative Problem Solving",cc:"cat-cp",term:"Affective",def:"The ways in which we deal with attitudinal and emotional aspects of learning, including feelings, appreciation, enthusiasm, motivations, attitudes and values (Butler, 2002, p. 3)."},
+  {cat:"Creative Problem Solving",cc:"cat-cp",term:"Convergent Thinking",def:"A focused and affirmative evaluation of alternatives, supported by skills such as: Developing, Prioritizing, Screening, Sorting, and Supporting."},
+  {cat:"Convergent Thinking Skills",cc:"cat-ct",term:"Developing",def:"Strengthening, improving, fleshing out the overall option so that it appears doable."},
+  {cat:"Convergent Thinking Skills",cc:"cat-ct",term:"Prioritizing",def:"Determining the rank order among options."},
+  {cat:"Convergent Thinking Skills",cc:"cat-ct",term:"Screening",def:"Filtering — keeping some and discarding others for particular reasons."},
+  {cat:"Convergent Thinking Skills",cc:"cat-ct",term:"Sorting",def:"Categorizing or grouping by some implicit or explicit schema."},
+  {cat:"Convergent Thinking Skills",cc:"cat-ct",term:"Supporting",def:"Examining for positive attributes, identifying and putting them forward to be considered further."},
+  {cat:"Creative Problem Solving",cc:"cat-cp",term:"Emotional Intelligence",def:"The ability to identify, assess, and manage the emotions of oneself and others."},
+  {cat:"Creative Problem Solving",cc:"cat-cp",term:"Divergent Thinking",def:"A broad search for many diverse and novel alternatives, supported by skills such as: Fluency, Flexibility, Elaboration, and Originality."},
+  {cat:"Divergent Thinking Skills",cc:"cat-dt",term:"Fluency",def:"Getting a large number of ideas or responses."},
+  {cat:"Divergent Thinking Skills",cc:"cat-dt",term:"Flexibility",def:"Getting variety in kinds or categories of ideas or responses."},
+  {cat:"Divergent Thinking Skills",cc:"cat-dt",term:"Elaboration",def:"Adding to or developing existing ideas or responses."},
+  {cat:"Divergent Thinking Skills",cc:"cat-dt",term:"Originality",def:"Getting new, novel, or different ideas or responses."},
+  {cat:"Creative Problem Solving",cc:"cat-cp",term:"Thinking",def:"Any mental activity that helps formulate or solve a problem, make a decision, or fulfill a desire to understand. It is a searching for answers, or reaching for meaning (Ruggiero, 1998, p. 2)."},
+  {cat:"Divergent Principles",cc:"cat-dp",term:"Defer Judgment",def:"To hold evaluation until a later time; to suspend disbelief and to entertain the potential value of each and every alternative generated."},
+  {cat:"Divergent Principles",cc:"cat-dp",term:"Go for Quantity",def:"To generate many possibilities, primarily aimed at building fluency in thought."},
+  {cat:"Divergent Principles",cc:"cat-dp",term:"Make Connections",def:"To introduce a new train of thought, or further elaboration by making associations with what was already generated."},
+  {cat:"Divergent Principles",cc:"cat-dp",term:"Seek Novelty",def:"To really stretch your thinking; to deliberately search for new opportunities, a new perspective, or a paradigm-breaking option."},
+  {cat:"Convergent Principles",cc:"cat-cv",term:"Apply Affirmative Judgment",def:"To carefully consider the strengths of an option rather than only focusing on its shortcomings."},
+  {cat:"Convergent Principles",cc:"cat-cv",term:"Keep Novelty Alive",def:"To entertain highly original options that you might have otherwise eliminated."},
+  {cat:"Convergent Principles",cc:"cat-cv",term:"Check Your Objectives",def:"To consider what is realistic or useful."},
+  {cat:"Convergent Principles",cc:"cat-cv",term:"Stay Focused",def:"To invest the necessary thought and energy to ensure that the best alternatives are being selected and then developed."},
+  {cat:"Wild-Card Principle",cc:"cat-wc",term:"Allow for Incubation",def:"To take a break from actively pursuing a solution when the problem is not consciously worked on, allowing options to develop without your full awareness."},
+  {cat:"Cognitive Thinking Skills",cc:"cat-cog",term:"Diagnostic Thinking",def:"Making a careful examination of a situation, describing the nature of a problem, and making decisions about appropriate process steps to be taken."},
+  {cat:"Cognitive Thinking Skills",cc:"cat-cog",term:"Visionary Thinking",def:"Articulating a vivid image of what you desire to create."},
+  {cat:"Cognitive Thinking Skills",cc:"cat-cog",term:"Strategic Thinking",def:"Identifying the critical issues that must be addressed and pathways needed to move toward the desired future."},
+  {cat:"Cognitive Thinking Skills",cc:"cat-cog",term:"Ideational Thinking",def:"Producing original mental images and thoughts that respond to important challenges."},
+  {cat:"Cognitive Thinking Skills",cc:"cat-cog",term:"Evaluative Thinking",def:"Assessing the reasonableness and quality of ideas in order to develop workable solutions."},
+  {cat:"Cognitive Thinking Skills",cc:"cat-cog",term:"Contextual Thinking",def:"Understanding the interrelated conditions and circumstances that will support or hinder success."},
+  {cat:"Cognitive Thinking Skills",cc:"cat-cog",term:"Tactical Thinking",def:"Devising a plan that includes specific and measurable steps for attaining a desired end and monitoring its effectiveness."},
+  {cat:"Affective Skills",cc:"cat-aff",term:"Mindfulness",def:"Attending to thoughts, feelings, and sensations relative to the present situation."},
+  {cat:"Affective Skills",cc:"cat-aff",term:"Dreaming",def:"To imagine as possible your desires and hopes."},
+  {cat:"Affective Skills",cc:"cat-aff",term:"Sensing Gaps",def:"To become consciously aware of discrepancies between what currently exists and what is desired or required."},
+  {cat:"Affective Skills",cc:"cat-aff",term:"Playfulness",def:"Freely toying with ideas."},
+  {cat:"Affective Skills",cc:"cat-aff",term:"Avoiding Premature Closure",def:"Resisting the urge to push for a decision."},
+  {cat:"Affective Skills",cc:"cat-aff",term:"Sensitivity to Environment",def:"The degree to which people are aware of their physical and psychological surroundings."},
+  {cat:"Affective Skills",cc:"cat-aff",term:"Tolerance for Risks",def:"Not allowing yourself to be shaken or unnerved by the possibility of failure or setbacks."}
+];
+
+const CPS_CATS = ["Creative Problem Solving Terms","Creative Problem Solving"];
+const PROBLEM_LEADER_CATS = ["Types of Problems","Leader Behaviors"];
+const LEADERSHIP_CATS = ["Leadership and Creativity","Kouzes & Posner Leadership Practices"];
+const DIVERGENT_CATS = ["Divergent Principles","Divergent Thinking Skills","Wild-Card Principle"];
+const CONVERGENT_CATS = ["Convergent Principles","Convergent Thinking Skills","Wild-Card Principle"];
+const PRINCIPLE_CATS = ["Divergent Principles","Convergent Principles","Wild-Card Principle"];
+
+// ══════════════════════════════════════════
+// STATE (persisted in localStorage)
+// ══════════════════════════════════════════
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('cps_state') || 'null'); } catch(e) { return null; }
+}
+function saveState() {
+  localStorage.setItem('cps_state', JSON.stringify(STATE));
+}
+function initState() {
+  const saved = loadState();
+  if (saved && saved.mastery) return saved;
+  const mastery = {};
+  TERMS.forEach(t => mastery[t.term] = 0); // 0=new,1=learning,2=mastered
+  return { mastery, starred: [], lastStudy: null, streak: 0, totalSessions: 0 };
+}
+let STATE = initState();
+
+// streak logic
+function updateStreak() {
+  const today = new Date().toDateString();
+  if (STATE.lastStudy === today) return;
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (STATE.lastStudy === yesterday) STATE.streak = (STATE.streak||0) + 1;
+  else STATE.streak = 1;
+  STATE.lastStudy = today;
+  saveState();
+}
+function renderStreak() {
+  document.getElementById('streak-num').textContent = STATE.streak || 0;
+}
+
+// ══════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  document.getElementById('tab-' + p).classList.add('active');
+  if (p === 'tools') { renderToolsStepBtns(); renderToolsDisplay(); }
+  if (p === 'methods') { renderMethodCatBtns(); renderMethods(); }
+}
+
+// ══════════════════════════════════════════
+// REFERENCE PAGE
+// ══════════════════════════════════════════
+let refFilter = 'all', refView = 'grid';
+
+function setRefFilter(f) {
+  refFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === f));
+  renderRef();
+}
+function setView(v) {
+  refView = v;
+  document.getElementById('vbtn-grid').classList.toggle('active', v === 'grid');
+  document.getElementById('vbtn-compact').classList.toggle('active', v === 'compact');
+  renderRef();
+}
+function toggleStar(term) {
+  const idx = STATE.starred.indexOf(term);
+  if (idx === -1) STATE.starred.push(term);
+  else STATE.starred.splice(idx, 1);
+  saveState();
+  renderRef();
+}
+function renderRef() {
+  const q = document.getElementById('ref-search').value.toLowerCase();
+  let filtered = TERMS.filter(t => {
+    const mq = !q || t.term.toLowerCase().includes(q) || t.def.toLowerCase().includes(q) || t.cat.toLowerCase().includes(q);
+    let mc = true;
+    if (refFilter === 'starred') mc = STATE.starred.includes(t.term);
+    else if (refFilter === 'CPS') mc = CPS_CATS.includes(t.cat);
+    else if (refFilter === 'Leadership Types') mc = LEADERSHIP_CATS.includes(t.cat);
+    else if (refFilter === 'Problem Type & Leader Response') mc = PROBLEM_LEADER_CATS.includes(t.cat);
+    else if (refFilter === 'Divergent') mc = DIVERGENT_CATS.includes(t.cat);
+    else if (refFilter === 'Convergent') mc = CONVERGENT_CATS.includes(t.cat);
+    else if (refFilter !== 'all') mc = t.cat === refFilter;
+    return mq && mc;
+  });
+
+  const starred = filtered.filter(t => STATE.starred.includes(t.term));
+  const rest = filtered.filter(t => !STATE.starred.includes(t.term));
+
+  // Sort by category order for Divergent/Convergent filters
+  if (refFilter === 'Leadership Types') rest.sort((a,b) => LEADERSHIP_CATS.indexOf(a.cat) - LEADERSHIP_CATS.indexOf(b.cat));
+  if (refFilter === 'Problem Type & Leader Response') rest.sort((a,b) => PROBLEM_LEADER_CATS.indexOf(a.cat) - PROBLEM_LEADER_CATS.indexOf(b.cat));
+  if (refFilter === 'Divergent') rest.sort((a,b) => DIVERGENT_CATS.indexOf(a.cat) - DIVERGENT_CATS.indexOf(b.cat));
+  if (refFilter === 'Convergent') rest.sort((a,b) => CONVERGENT_CATS.indexOf(a.cat) - CONVERGENT_CATS.indexOf(b.cat));
+
+  const sorted = [...starred, ...rest];
+
+  const masteryLabels = ['New','Learning','Mastered'];
+  const statCounts = [0,0,0];
+  TERMS.forEach(t => statCounts[STATE.mastery[t.term] || 0]++);
+
+  document.getElementById('ref-stats').innerHTML = `
+    <span>Showing ${filtered.length} of ${TERMS.length} terms</span>
+    <span style="margin-left:auto;display:flex;gap:12px;">
+      <span><span class="mastery-dot m0"></span> New: ${statCounts[0]}</span>
+      <span><span class="mastery-dot m1"></span> Learning: ${statCounts[1]}</span>
+      <span><span class="mastery-dot m2"></span> Mastered: ${statCounts[2]}</span>
+    </span>`;
+
+  const grid = document.getElementById('ref-grid');
+  grid.className = 'ref-grid' + (refView === 'compact' ? ' compact' : '');
+
+  if (!sorted.length) { grid.innerHTML = '<div class="no-results">No terms match your search.</div>'; return; }
+
+  const m = STATE.mastery;
+  const dotClass = ['m0','m1','m2'];
+
+  if (refView === 'grid') {
+    grid.innerHTML = sorted.map(t => `
+      <div class="card">
+        <span class="cat-badge ${t.cc}">${t.cat}</span>
+        <div class="card-term">${t.term} <span class="mastery-dot ${dotClass[m[t.term]||0]}" title="${masteryLabels[m[t.term]||0]}"></span></div>
+        <div class="card-def">${t.def}</div>
+      </div>`).join('');
+  } else {
+    grid.innerHTML = sorted.map(t => `
+      <div class="card compact-card">
+        <span class="cat-badge ${t.cc}" style="white-space:nowrap">${t.cat}</span>
+        <div class="card-term">${t.term} <span class="mastery-dot ${dotClass[m[t.term]||0]}"></span></div>
+        <div class="card-def">${t.def}</div>
+      </div>`).join('');
+  }
+}
+
+// ══════════════════════════════════════════
+// FLASHCARD ENGINE
+// ══════════════════════════════════════════
+let deck = [], deckIdx = 0, isFlipped = false, sessionResults = {got:0, almost:0, missed:0};
+let currentDeckType = 'all';
+
+function buildDeck(type) {
+  let pool;
+  if (type === 'starred') pool = TERMS.filter(t => STATE.starred.includes(t.term));
+  else if (type === 'weak') pool = TERMS.filter(t => (STATE.mastery[t.term]||0) < 2);
+  else pool = [...TERMS];
+  if (type === 'shuffle' || type === 'weak') pool = pool.sort(() => Math.random() - 0.5);
+  return pool;
+}
+
+function setDeck(type) {
+  currentDeckType = type;
+  document.querySelectorAll('.quiz-opt').forEach(b => b.classList.toggle('active', b.dataset.deck === type));
+  deck = buildDeck(type);
+  deckIdx = 0;
+  sessionResults = {got:0, almost:0, missed:0};
+  document.getElementById('quiz-main').style.display = '';
+  document.getElementById('session-done').style.display = 'none';
+  showCard();
+}
+
+function showCard() {
+  if (!deck.length) { document.getElementById('fc-term').textContent = 'No cards in this deck.'; return; }
+  const t = deck[deckIdx];
+  document.getElementById('fc-term').textContent = t.term;
+  document.getElementById('fc-cat-front').textContent = t.cat;
+  document.getElementById('fc-def').textContent = t.def;
+  const card = document.getElementById('fc-card');
+  card.classList.remove('flipped');
+  isFlipped = false;
+  document.getElementById('rating-row').classList.add('hidden');
+  const pct = Math.round((deckIdx / deck.length) * 100);
+  document.getElementById('fc-prog-bar').style.width = pct + '%';
+  document.getElementById('fc-prog-label').textContent = (deckIdx + 1) + ' / ' + deck.length;
+  document.getElementById('fc-prev').disabled = deckIdx === 0;
+  document.getElementById('fc-next').disabled = deckIdx >= deck.length - 1;
+}
+
+function flipCard() {
+  if (!deck.length) return;
+  isFlipped = !isFlipped;
+  document.getElementById('fc-card').classList.toggle('flipped', isFlipped);
+  if (isFlipped) document.getElementById('rating-row').classList.remove('hidden');
+}
+
+function rateCard(score) {
+  const t = deck[deckIdx];
+  if (score === 2) { sessionResults.got++; STATE.mastery[t.term] = 2; }
+  else if (score === 1) { sessionResults.almost++; STATE.mastery[t.term] = Math.max(STATE.mastery[t.term]||0, 1); }
+  else { sessionResults.missed++; STATE.mastery[t.term] = Math.min(STATE.mastery[t.term]||0, 1); }
+  saveState();
+  if (deckIdx < deck.length - 1) { deckIdx++; showCard(); }
+  else { finishSession(); }
+}
+
+function finishSession() {
+  updateStreak(); renderStreak();
+  STATE.totalSessions = (STATE.totalSessions||0) + 1;
+  saveState();
+  document.getElementById('quiz-main').style.display = 'none';
+  document.getElementById('session-done').style.display = '';
+  document.getElementById('done-got').textContent = sessionResults.got;
+  document.getElementById('done-almost').textContent = sessionResults.almost;
+  document.getElementById('done-missed').textContent = sessionResults.missed;
+  const weakCount = TERMS.filter(t => (STATE.mastery[t.term]||0) < 2).length;
+  document.getElementById('study-weak-btn').disabled = weakCount === 0;
+}
+
+function restartDeck() { setDeck(currentDeckType); }
+function studyWeak() { setDeck('weak'); }
+
+function prevCard() { if (deckIdx > 0) { deckIdx--; showCard(); } }
+function nextCard() { if (deckIdx < deck.length - 1) { deckIdx++; showCard(); } }
+
+// keyboard shortcuts
+document.addEventListener('keydown', e => {
+  const onQuiz = document.getElementById('page-quiz').classList.contains('active');
+  if (!onQuiz) return;
+  if (e.key === 'ArrowRight') { e.preventDefault(); nextCard(); }
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); prevCard(); }
+  if ((e.key === ' ' || e.key === 'Enter') && document.activeElement.id !== 'fc-scene') {
+    e.preventDefault();
+    if (e.repeat) return;
+    if (isFlipped) return;
+    flipCard();
+  }
+  if (isFlipped && !e.repeat) {
+    if (e.key === '1') rateCard(0);
+    if (e.key === '2') rateCard(1);
+    if (e.key === '3') rateCard(2);
+  }
+});
+
+// ══════════════════════════════════════════
+// PROGRESS PAGE
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// DIAGRAMS PAGE
+// ══════════════════════════════════════════
+let activeDiagTerm = null;
+
+function openDetail(termName) {
+  const t = TERMS.find(x => x.term === termName);
+  if (!t) return;
+  activeDiagTerm = termName;
+  // clear active cells
+  document.querySelectorAll('.matrix-cell.content').forEach(c => c.classList.remove('active-cell'));
+  const cellId = 'cell-' + termName.toLowerCase();
+  const el = document.getElementById(cellId);
+  if (el) el.classList.add('active-cell');
+  document.getElementById('dp-term').textContent = t.term;
+  document.getElementById('dp-cat').textContent = t.cat;
+  document.getElementById('dp-def').textContent = t.def;
+  const panel = document.getElementById('diag-detail');
+  panel.classList.add('open');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeDetail() {
+  document.getElementById('diag-detail').classList.remove('open');
+  document.querySelectorAll('.matrix-cell.content').forEach(c => c.classList.remove('active-cell'));
+  activeDiagTerm = null;
+}
+
+function goFlashcard() {
+  if (!activeDiagTerm) return;
+  // build a single-card deck for this term
+  const t = TERMS.find(x => x.term === activeDiagTerm);
+  if (!t) return;
+  showPage('quiz');
+  deck = [t];
+  deckIdx = 0;
+  sessionResults = {got:0, almost:0, missed:0};
+  document.getElementById('quiz-main').style.display = '';
+  document.getElementById('session-done').style.display = 'none';
+  // clear active quiz-opt
+  document.querySelectorAll('.quiz-opt').forEach(b => b.classList.remove('active'));
+  showCard();
+}
+
+// ══════════════════════════════════════════
+// TABLES 4.1 & 4.2
+// ══════════════════════════════════════════
+const COG_STEPS = [
+  {step:"Assessing the Situation", note:"(executive step)", purpose:"To describe and identify relevant data and to determine the next process step.", skill:"Diagnostic Thinking"},
+  {step:"Exploring the Vision", purpose:"To develop a vision of a desired outcome.", skill:"Visionary Thinking"},
+  {step:"Formulating Challenges", purpose:"To identify the gaps that must be closed to achieve the desired outcome.", skill:"Strategic Thinking"},
+  {step:"Exploring Ideas", purpose:"To generate novel ideas that address important challenges.", skill:"Ideational Thinking"},
+  {step:"Formulating Solutions", purpose:"To move from ideas to solutions.", skill:"Evaluative Thinking"},
+  {step:"Exploring Acceptance", purpose:"To increase the likelihood of success.", skill:"Contextual Thinking"},
+  {step:"Formulating a Plan", purpose:"To develop an implementation plan.", skill:"Tactical Thinking"}
+];
+
+const AFF_STEPS = [
+  {step:"Assessing the Situation", note:"(executive step)", purpose:"To describe and identify relevant data and to determine the next process step.", skill:"Mindfulness"},
+  {step:"Exploring the Vision", purpose:"To develop a vision of a desired outcome.", skill:"Dreaming"},
+  {step:"Formulating Challenges", purpose:"To identify the gaps that must be closed to achieve the desired outcome.", skill:"Sensing Gaps"},
+  {step:"Exploring Ideas", purpose:"To generate novel ideas that address important challenges.", skill:"Playfulness"},
+  {step:"Formulating Solutions", purpose:"To move from ideas to solutions.", skill:"Avoiding Premature Closure"},
+  {step:"Exploring Acceptance", purpose:"To increase the likelihood of success.", skill:"Sensitivity to Environment"},
+  {step:"Formulating a Plan", purpose:"To develop an implementation plan.", skill:"Tolerance for Risks"}
+];
+
+let currentCogTerm = null, currentAffTerm = null;
+
+function renderTables() {
+  const tdStyle = 'padding:9px 12px;border:0.5px solid var(--border);vertical-align:top;line-height:1.6;font-size:13px;';
+
+  function getSkillDef(skillName) {
+    const t = TERMS.find(x => x.term === skillName);
+    return t ? t.def : '';
+  }
+
+  document.getElementById('cog-table-body').innerHTML = COG_STEPS.map((r,i) => `
+    <tr style="background:${i%2===0?'var(--surface)':'var(--bg)'}">
+      <td style="${tdStyle}"><strong>${r.step}</strong>${r.note ? '<br><span style="font-size:11px;color:var(--muted)">'+r.note+'</span>' : ''}</td>
+      <td style="${tdStyle}color:var(--muted)">${r.purpose}</td>
+      <td style="${tdStyle}font-weight:600;color:var(--text);">${r.skill}</td>
+      <td style="${tdStyle}color:var(--muted)">${getSkillDef(r.skill)}</td>
+    </tr>`).join('');
+
+  document.getElementById('aff-table-body').innerHTML = AFF_STEPS.map((r,i) => `
+    <tr style="background:${i%2===0?'var(--surface)':'var(--bg)'}">
+      <td style="${tdStyle}"><strong>${r.step}</strong>${r.note ? '<br><span style="font-size:11px;color:var(--muted)">'+r.note+'</span>' : ''}</td>
+      <td style="${tdStyle}color:var(--muted)">${r.purpose}</td>
+      <td style="${tdStyle}font-weight:600;color:var(--text);">${r.skill}</td>
+      <td style="${tdStyle}color:var(--muted)">${getSkillDef(r.skill)}</td>
+    </tr>`).join('');
+}
+
+function openTableDetail(type, termName) {
+  const t = TERMS.find(x => x.term === termName);
+  if (!t) return;
+  const panelId = 'diag-detail-' + type;
+  if (type === 'cog') currentCogTerm = termName;
+  else currentAffTerm = termName;
+  document.getElementById('dp-cat-' + type).textContent = t.cat;
+  document.getElementById('dp-term-' + type).textContent = t.term;
+  document.getElementById('dp-def-' + type).textContent = t.def;
+  const panel = document.getElementById(panelId);
+  panel.classList.add('open');
+  panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function closeDetailById(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// ══════════════════════════════════════════
+// SINGLE CPS CIRCLE DIAGRAM
+// ══════════════════════════════════════════
+const STEP_PHASES = {
+  'Assessing the Situation': 'Executive Step',
+  'Exploring the Vision':    'Clarification',
+  'Formulating Challenges':  'Clarification',
+  'Exploring Ideas':         'Transformation',
+  'Formulating Solutions':   'Transformation',
+  'Exploring Acceptance':    'Implementation',
+  'Formulating a Plan':      'Implementation'
+};
+
+const STEP_EL_IDS = {
+  'Assessing the Situation': 'fig-step-situation',
+  'Exploring the Vision':    'fig-step-vision',
+  'Formulating Challenges':  'fig-step-challenges',
+  'Exploring Ideas':         'fig-step-ideas',
+  'Formulating Solutions':   'fig-step-solutions',
+  'Exploring Acceptance':    'fig-step-acceptance',
+  'Formulating a Plan':      'fig-step-plan'
+};
+
+const PHASE_BADGE = {
+  'Executive Step':  { bg:'#e8f0e9', color:'#1a3d28', border:'#2d5a3d' },
+  'Clarification':   { bg:'#c8d8f8', color:'#1a3060', border:'#2a4a90' },
+  'Transformation':  { bg:'#b6efd0', color:'#1a4a2e', border:'#1a6640' },
+  'Implementation':  { bg:'#fde9a0', color:'#5c3a00', border:'#9a6200' }
+};
+
+function figOpenStep(stepName) {
+  Object.values(STEP_EL_IDS).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('fig-active');
+  });
+  const el = document.getElementById(STEP_EL_IDS[stepName]);
+  if (el) el.classList.add('fig-active');
+
+  const phase   = STEP_PHASES[stepName] || '';
+  const cogRow  = COG_STEPS.find(r => r.step === stepName);
+  const affRow  = AFF_STEPS.find(r => r.step === stepName);
+  const cogTerm = cogRow  ? TERMS.find(t => t.term === cogRow.skill)  : null;
+  const affTerm = affRow  ? TERMS.find(t => t.term === affRow.skill)  : null;
+  const ps = PHASE_BADGE[phase] || {};
+
+  const badge = document.getElementById('fig-phase-badge');
+  badge.textContent      = phase;
+  badge.style.background = ps.bg    || '#eee';
+  badge.style.color      = ps.color || '#333';
+  badge.style.border     = '1px solid ' + (ps.border || '#ccc');
+
+  document.getElementById('fig-step-name').textContent    = stepName;
+  document.getElementById('fig-step-purpose').textContent = cogRow ? cogRow.purpose : '';
+  document.getElementById('fig-cog-name').textContent     = cogTerm ? cogTerm.term : '';
+  document.getElementById('fig-cog-def').textContent      = cogTerm ? cogTerm.def  : '';
+  document.getElementById('fig-aff-name').textContent     = affTerm ? affTerm.term : '';
+  document.getElementById('fig-aff-def').textContent      = affTerm ? affTerm.def  : '';
+  document.getElementById('fig-cog-btn').onclick = () => goFlashcardTerm(cogTerm ? cogTerm.term : '');
+  document.getElementById('fig-aff-btn').onclick = () => goFlashcardTerm(affTerm ? affTerm.term : '');
+
+  const panel = document.getElementById('fig-detail');
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function figCloseDetail() {
+  document.getElementById('fig-detail').style.display = 'none';
+  Object.values(STEP_EL_IDS).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('fig-active');
+  });
+}
+
+function renderCPSFigures() {}
+
+function goFlashcardTerm(termName) {
+  if (!termName) return;
+  const t = TERMS.find(x => x.term === termName);
+  if (!t) return;
+  showPage('quiz');
+  deck = [t];
+  deckIdx = 0;
+  sessionResults = {got:0, almost:0, missed:0};
+  document.getElementById('quiz-main').style.display = '';
+  document.getElementById('session-done').style.display = 'none';
+  document.querySelectorAll('.quiz-opt').forEach(b => b.classList.remove('active'));
+  showCard();
+}
+
+// ══════════════════════════════════════════
+// METHODS
+// ══════════════════════════════════════════
+const METHOD_CATS = [
+  'Energizers',
+  'Team Building & Culture',
+  'Ideation & Brainstorming',
+  'Prioritization & Decision Making',
+  'Vision & Strategy',
+  'Planning & Action',
+  'Reflection & Feedback',
+  'Insights & Research'
+];
+
+const METHOD_CAT_COLORS = {
+  'Energizers':                       { bg:'#fde9a0', color:'#5c3a00', border:'#9a6200' },
+  'Team Building & Culture':          { bg:'#fce4ec', color:'#880e4f', border:'#c2185b' },
+  'Ideation & Brainstorming':         { bg:'#e8eaf6', color:'#1a237e', border:'#3949ab' },
+  'Prioritization & Decision Making': { bg:'#e8f5e9', color:'#1b5e20', border:'#388e3c' },
+  'Vision & Strategy':                { bg:'#dce8f8', color:'#1a3060', border:'#2a4a90' },
+  'Planning & Action':                { bg:'#e8f0e9', color:'#1a3d28', border:'#2d5a3d' },
+  'Reflection & Feedback':            { bg:'#f3e8ff', color:'#4a1580', border:'#7b1fa2' },
+  'Insights & Research':              { bg:'#e3f2fd', color:'#0d47a1', border:'#1565c0' }
+};
+
+const DEFAULT_METHODS = [
+  // Energizers
+  { id:'m1',  cat:'Energizers', name:'Build a Bridge', desc:'Demonstrate the importance of alignment, teamwork, and roadmapping in accomplishing a shared goal. Teams compete to build a bridge using limited materials, revealing how communication and planning affect outcomes.' },
+  { id:'m2',  cat:'Energizers', name:'Four Corners', desc:'Understand team perspectives and preferences through interactive movement. Participants physically move to corners of the room based on their responses to questions, making differing viewpoints visible.' },
+  { id:'m3',  cat:'Energizers', name:'Step In, Step Out', desc:'Gain a visual understanding of participants answers. Participants step in or out of a circle to indicate agreement or shared experience, creating an immediate visual map of the group.' },
+  { id:'m4',  cat:'Energizers', name:'Follow the Follower', desc:'Demonstrate the complexity of an organization with more than one leader. A movement-based activity that shows how conflicting leadership signals create confusion and misalignment.' },
+  { id:'m5',  cat:'Energizers', name:'Meet and Greet Bingo', desc:'Educate participants on the different types of people in the room in an interactive style. Participants circulate and find people who match descriptions on their bingo card.' },
+  { id:'m6',  cat:'Energizers', name:'Pick a Pic', desc:'Engage participants by introducing themselves based on an image that represents their role and/or contribution. Each person selects a visual from a set of images and uses it as a springboard for personal introduction.' },
+  { id:'m7',  cat:'Energizers', name:'What Represents You?', desc:'Engage participants by introducing themselves based on a themed item that represents their role and/or contribution. Similar to Pick a Pic but uses physical objects rather than images.' },
+  { id:'m8',  cat:'Energizers', name:'Magic Wand', desc:'Highlight the importance of communication and alignment within teams. Participants attempt to collectively lower a lightweight rod using only one finger each — a deceptively difficult coordination challenge.' },
+  { id:'m9',  cat:'Energizers', name:'Rock, Paper, Scissors', desc:'Help participants understand the value in supporting others and their ideas. A tournament-style game where losers become enthusiastic supporters of winners, ending with the whole group cheering for two finalists.' },
+  { id:'m10', cat:'Energizers', name:'Speed Chats', desc:'Build rapport and strengthen relationships through intentional questions. Participants rotate through short one-on-one conversations using provided prompts, creating quick but meaningful connections.' },
+  { id:'m11', cat:'Energizers', name:'Walk and Talk', desc:'Have participants brainstorm more effectively through taking a walk. Research shows movement enhances creative thinking — pairs or small groups discuss a prompt while walking.' },
+  { id:'m12', cat:'Energizers', name:'Yes, And', desc:'Demonstrate the importance of divergent thinking to brainstorm ideas as a team. Participants practice building on each others ideas using the improv principle of "yes, and" rather than "yes, but."' },
+  { id:'m13', cat:'Energizers', name:'Disruptus', desc:'Use a popular divergent thinking game to look at objects and ideas in new and innovative ways. Participants take ordinary objects and reimagine them by combining, transforming, or repurposing them.' },
+  { id:'m14', cat:'Energizers', name:'Bot or Not', desc:'Understand the impact of Gen-AI by identifying AI-generated content from human-created content. Participants evaluate a series of outputs and debate whether they were created by a human or AI, sparking conversation about creativity and technology.' },
+
+  // Team Building & Culture
+  { id:'m15', cat:'Team Building & Culture', name:'Peaks and Valleys', desc:'Surface shared team values, create deeper personal connections, and build productive empathy. Participants share personal highs and lows, revealing what they care about and building trust within the group.' },
+  { id:'m16', cat:'Team Building & Culture', name:'Individual Emblem / Coat of Arms', desc:'Showcase your history, strengths, talents, and values in a four-quadrant visual. Each participant creates a personal emblem that captures who they are, which is then shared with the group.' },
+  { id:'m17', cat:'Team Building & Culture', name:'Loves and Bugs', desc:'Discover the defining characteristics of a strength-based assessment like Business Chemistry to better understand yourself, team members, and stakeholders.' },
+  { id:'m18', cat:'Team Building & Culture', name:'Grounding Manifesto', desc:'Leverage a standard or custom manifesto to ground the group in community standards. Sets shared expectations and norms at the start of a session or team engagement.' },
+  { id:'m19', cat:'Team Building & Culture', name:'Three Whys (Simon Sinek)', desc:'Identify the collective theme motivating the actions of a group. Clarity on purpose and motivation will align the team or identify areas of misalignment and opportunity to realign.' },
+  { id:'m20', cat:'Team Building & Culture', name:'Doing Agile', desc:'Put the principles of Agile into practice via individual roles and responsibilities and show how a team can embrace a more agile mindset in general.' },
+  { id:'m21', cat:'Team Building & Culture', name:'Broken Squares', desc:'Illustrate the dynamics of cooperation and competition within a team. Small groups must assemble squares from puzzle pieces — but can only succeed by sharing pieces across teams, revealing how self-interest can block collective success.' },
+  { id:'m22', cat:'Team Building & Culture', name:'Gives and Takes', desc:'Surface what each person or group brings to a shared effort and what they need from others. Creates visibility into interdependencies and sets up more effective collaboration.' },
+  { id:'m23', cat:'Team Building & Culture', name:'What I Need From You?', desc:'Clarify expectations and needs across roles or functions. Each participant or group articulates what they need from others to be successful, creating shared accountability.' },
+  { id:'m24', cat:'Team Building & Culture', name:'Island Trip', desc:'Understand perspectives and motivations by identifying what participants would bring with them in a unique circumstance. A metaphorical prompt that reveals values, priorities, and personality.' },
+  { id:'m25', cat:'Team Building & Culture', name:'Walk in Their Shoes', desc:'Individually reflect on a key stakeholders preferences in business interactions and identify ways to adapt behaviors to connect more effectively.' },
+  { id:'m26', cat:'Team Building & Culture', name:'Needs, Gives, and Takes', desc:'Articulate what each group needs for success, what they can give to other stakeholders, and what they may take. Done for each group, it creates a full picture of team interdependencies.' },
+
+  // Ideation & Brainstorming
+  { id:'m27', cat:'Ideation & Brainstorming', name:'Brainwriting', desc:'Generate the most compelling ideas in groups with more effective individual brainstorming. Participants write ideas silently before sharing, reducing groupthink and ensuring all voices are heard.' },
+  { id:'m28', cat:'Ideation & Brainstorming', name:'Writestorming', desc:'A written variation of brainstorming where participants independently generate ideas on paper before sharing with the group. Particularly effective for introverts or when groupthink is a concern.' },
+  { id:'m29', cat:'Ideation & Brainstorming', name:'What Would X Do?', desc:'Spark creative thinking by applying insights, perspectives, and lessons from other individuals or industries. Participants ask how a famous innovator, competitor, or unlikely character would approach the challenge.' },
+  { id:'m30', cat:'Ideation & Brainstorming', name:'Marshmallow Challenge', desc:'Show the power of prototyping as a mechanism that leads to effective innovation and identify challenges hiding below the surface. Teams build the tallest freestanding structure using spaghetti, tape, and a marshmallow.' },
+  { id:'m31', cat:'Ideation & Brainstorming', name:'Create a Lego Structure', desc:'Capture aspirations and expectations of the future through creating a 3D structure. Bring an idea to life through the use of Legos, making abstract concepts tangible and discussable.' },
+  { id:'m32', cat:'Ideation & Brainstorming', name:'Flipping Orthodoxies', desc:'Challenge deeply held assumptions by deliberately inverting them. Participants identify the unquestioned rules of their industry or organization, then imagine what would happen if the opposite were true.' },
+  { id:'m33', cat:'Ideation & Brainstorming', name:'Hunching Others', desc:'Generate ideas by building on the instincts and half-formed ideas of others. Participants share rough hunches that others then develop, creating a chain of increasingly refined thinking.' },
+  { id:'m34', cat:'Ideation & Brainstorming', name:'Creating Challenge Statements', desc:'Change problems or negative statements into open "How might we" questions. Each question pushes in a different direction, and the group prioritizes the desired outcome.' },
+  { id:'m35', cat:'Ideation & Brainstorming', name:'Shark Tank', desc:'Pitch ideas to a panel of evaluators in a structured format. Teams develop and present their concepts, receiving direct feedback and building skills in communication and persuasion.' },
+  { id:'m36', cat:'Ideation & Brainstorming', name:'Finish the Sentence Mad Libs', desc:'Participants ground on a vision, direction, or outcome through filling in blanks or completing a sentence. A fast, low-pressure way to surface assumptions and align on language.' },
+
+  // Prioritization & Decision Making
+  { id:'m37', cat:'Prioritization & Decision Making', name:'2x2 Matrix Prioritization', desc:'Identify and agree on priority initiatives based on two primary criteria such as effort vs impact, importance vs urgency, or other criteria. Ideas are plotted on a grid to make tradeoffs visible.' },
+  { id:'m38', cat:'Prioritization & Decision Making', name:'Voting Dots', desc:'Prioritize options using an efficient voting method. Participants place dot stickers on their preferred options, creating an immediate visual picture of group priorities.' },
+  { id:'m39', cat:'Prioritization & Decision Making', name:'Vote With Your Feet', desc:'Indicate preferences in a highly visual and physical fashion. Participants physically move to different areas of the room to show their position on a question or choice.' },
+  { id:'m40', cat:'Prioritization & Decision Making', name:'Heat Map', desc:'Create a visual tapestry to help the group analyze actions or areas of focus. Participants use stickers or marks to indicate where energy, interest, or concern is concentrated.' },
+  { id:'m41', cat:'Prioritization & Decision Making', name:'Confidence Continuum', desc:`Assess the group's level of confidence to deliver against their decisions such as vision, initiatives, and objectives. Surfaces hidden doubt and identifies where more work is needed.` },
+  { id:'m42', cat:'Prioritization & Decision Making', name:'What Needs to Be True?', desc:'Work backward from a desired outcome to identify the assumptions and conditions that must hold for it to succeed. A powerful tool for stress-testing strategies and surfacing hidden risks.' },
+  { id:'m43', cat:'Prioritization & Decision Making', name:'Pre-Mortem', desc:'Visualize success and failure of a project or idea in order to determine critical success factors. Participants imagine the project has failed and work backward to identify what went wrong.' },
+  { id:'m44', cat:'Prioritization & Decision Making', name:'Circles and Squares', desc:'Track the status of open and resolved items throughout a session. Circles represent open questions or unresolved topics that still need attention. Squares represent items that are squared away — decided, resolved, or agreed upon. A simple visual system that keeps the group honest about what is and is not settled.' },
+
+  // Vision & Strategy
+  { id:'m45', cat:'Vision & Strategy', name:'Art of the Possible', desc:'Explore industry-leading capabilities and success stories, visions, and live demonstrations. Brainstorm potential implications to the organization and what becomes possible with new thinking.' },
+  { id:'m46', cat:'Vision & Strategy', name:'Team Showcase', desc:'Explore best-in-class examples to successfully elevate customer experiences. Teams present their best work or research to inspire collective thinking about what excellence looks like.' },
+  { id:'m47', cat:'Vision & Strategy', name:'Here to There', desc:'Clarify aspiration by reviewing the positive and negative effects of the current and future state. A structured comparison that makes the cost of staying still visible.' },
+  { id:'m48', cat:'Vision & Strategy', name:'Headlines', desc:'Articulate what the group is trying to achieve in one clear, concise sentence. Participants write a newspaper headline from the future announcing their success.' },
+  { id:'m49', cat:'Vision & Strategy', name:'Hopes and Fears', desc:'Clarify aspiration by reviewing the hopes and fears of an individual or team. Creates psychological safety by acknowledging both excitement and anxiety about a direction.' },
+  { id:'m50', cat:'Vision & Strategy', name:'Pride and Possibility', desc:'With a certain initiative, goals and objectives, or other scope, highlight past successes and identify areas for further improvement. Understand current state and identify future state possibilities.' },
+  { id:'m51', cat:'Vision & Strategy', name:'Guiding Principles', desc:'Establish the core beliefs and values that will guide a team or initiative forward. Participants co-create a set of principles that serve as a shared decision-making framework.' },
+  { id:'m52', cat:'Vision & Strategy', name:'Three Whys', desc:'Reach a deeper level of insight by peeling back the layers on a goal or challenge. Asking why three times moves from surface symptoms to underlying causes and motivations.' },
+  { id:'m53', cat:'Vision & Strategy', name:'Engaging Your Stakeholders', desc:'Map and plan engagement with key stakeholders for a project or initiative. Identify who needs to be informed, consulted, or actively involved, and design the right touchpoints for each.' },
+  { id:'m54', cat:'Vision & Strategy', name:'What Does Success Look Like?', desc:'Align the group on a shared definition of success across individual, team, and organizational levels. Surfaces hidden assumptions about what winning actually means.' },
+
+  // Planning & Action
+  { id:'m55', cat:'Planning & Action', name:'30-60-90 Planning', desc:'Create a structured plan with clear milestones at 30, 60, and 90 days. Helps teams move from vision to action by breaking large goals into near-term, concrete steps.' },
+  { id:'m56', cat:'Planning & Action', name:'5-5-5 Planning', desc:'Create a plan that focuses on priority actions that must be taken in the next 5 days, 5 weeks, and 5 months. A simple framework for balancing urgency with longer-term momentum.' },
+  { id:'m57', cat:'Planning & Action', name:'Now, Next, Later', desc:'Organize actions and initiatives into three time horizons: what needs to happen now, what comes next, and what comes later. Creates shared clarity on sequencing without locking into rigid timelines.' },
+  { id:'m58', cat:'Planning & Action', name:'Start, Stop, Continue', desc:'Identify specific behaviors an individual or team needs to start, stop, or continue in order to be successful. A simple and honest framework for behavior change.' },
+  { id:'m59', cat:'Planning & Action', name:'Commitments', desc:'Drive forward action through commitment to one item to build momentum. Each participant publicly commits to one specific action, creating accountability and shared forward motion.' },
+  { id:'m60', cat:'Planning & Action', name:'Path Forward Template', desc:'Create a clear, structured path from current state to desired outcome. Captures decisions made, actions required, owners, and timelines in a single shareable artifact.' },
+  { id:'m61', cat:'Planning & Action', name:'Roadmap on Stickies', desc:'Build a visual roadmap collaboratively using sticky notes. The tactile, flexible format makes it easy to sequence, reprioritize, and collectively own the plan.' },
+  { id:'m62', cat:'Planning & Action', name:'Barriers and Enablers', desc:'Identify what will help and hinder progress toward a goal. Creates a realistic picture of the landscape so the team can plan around obstacles and leverage strengths.' },
+
+  // Reflection & Feedback
+  { id:'m63', cat:'Reflection & Feedback', name:'I Like, I Wish, I Wonder', desc:'Reflect on ideas proposed over the course of a day and obtain feedback from participants. A balanced feedback format that captures appreciation, constructive suggestions, and open questions.' },
+  { id:'m64', cat:'Reflection & Feedback', name:'What One Thing?', desc:'Write down one word or one key insight that captures the experience. A powerful closing activity that distills learning and creates a memorable takeaway.' },
+  { id:'m65', cat:'Reflection & Feedback', name:'Champion, Cheers, and Challenge', desc:'A structured feedback method where participants identify what they champion about an idea, what they cheer for, and what challenges they see. Balances enthusiasm with honest critique.' },
+  { id:'m66', cat:'Reflection & Feedback', name:'Start, Stop, Continue', desc:'Identify specific behaviors an individual or team needs to start, stop, or continue in order to be successful. Also effective as a retrospective or feedback tool at the end of a session.' },
+  { id:'m67', cat:'Reflection & Feedback', name:'5 Whys', desc:'Reach a deeper level of insight by peeling the layers back on a goal or challenge. Repeatedly asking why moves the group from surface-level symptoms to root causes.' },
+  { id:'m68', cat:'Reflection & Feedback', name:'Spectrum True or False Statements', desc:'Present a series of statements and have participants position themselves on a spectrum from strongly agree to strongly disagree. Surfaces the range of perspectives in the room and sparks discussion.' },
+  { id:'m69', cat:'Reflection & Feedback', name:'Good Team Bad Team', desc:'Reflect on the characteristics of high-performing and low-performing teams. Participants identify what made their best and worst team experiences, surfacing shared values and warning signs.' },
+
+  // Insights & Research
+  { id:'m70', cat:'Insights & Research', name:'Persona Gallery Walk', desc:'Envision specific personas to understand customer needs and/or community impact. Participants move through a gallery of customer profiles, building empathy and identifying unmet needs.' },
+  { id:'m71', cat:'Insights & Research', name:'SME Demo', desc:'Gain technical and expert insights into a capability. A subject matter expert presents a deep dive into a topic relevant to the session, grounding the group in facts before ideation.' },
+  { id:'m72', cat:'Insights & Research', name:'Case Study', desc:'Highlight successes and failures from other companies. A structured review of an external example that provides lessons learned and sparks new thinking.' },
+  { id:'m73', cat:'Insights & Research', name:'Jeopardy', desc:'Educate a group on a topic relevant to the session in a game-show format. Teams compete to answer questions, making learning active and memorable.' },
+  { id:'m74', cat:'Insights & Research', name:'What We Heard', desc:'Set a tone and context with quotes, personal experiences, stakeholder interviews, or other information relevant to the experience. Grounds the session in real voices and real data.' },
+  { id:'m75', cat:'Insights & Research', name:'Gallery Walk', desc:'Bring pre-existing or collected content to life through interactive in-room engagement. Participants move through stations, reviewing materials and adding reactions or insights.' },
+  { id:'m76', cat:'Insights & Research', name:'Instant Expert', desc:'Rapidly develop baseline knowledge on a topic through curated materials and short presentations. Helps a group without deep expertise get to a working level of understanding quickly.' },
+  { id:'m77', cat:'Insights & Research', name:'Storytelling Through Poems', desc:'Use the structure of poetry to surface insights, emotions, and perspectives that might not emerge through traditional discussion. Particularly effective for culture, values, and identity work.' },
+  { id:'m78', cat:'Insights & Research', name:'Pick it, Name it, Sell it', desc:'Improve communication and persuasion skills by pitching an idea or item to a certain stakeholder or group. Develops the ability to frame and advocate for a concept clearly.' },
+  { id:'m79', cat:'Insights & Research', name:'Journey Map', desc:'Visualize the end-to-end experience of a customer, employee, or stakeholder. Maps the steps, emotions, and touchpoints of a journey to identify pain points and opportunities.' },
+  { id:'m80', cat:'Insights & Research', name:'Fishbone Diagram', desc:'Identify the root causes of a problem by mapping contributing factors across categories. Also called the Ishikawa or cause-and-effect diagram. The problem is placed at the head of the fish, and branches represent major cause categories — such as people, process, environment, and tools — with specific contributing factors along each branch. Helps teams move from symptoms to underlying causes before jumping to solutions.' },
+  { id:'m81', cat:'Vision & Strategy', name:'Letter from the Future', desc:'Participants write a letter dated 3 to 5 years from now describing what success looks like as if it has already happened. Written in first person from the future, the letter unlocks visionary thinking that direct questions often cannot — it bypasses analytical hesitation and invites genuine imagination. Powerful as an opening activity to establish aspiration or as a closing activity to cement commitment.' },
+  { id:'m82', cat:'Energizers', name:'Three-Level Check-In', desc:`A layered connection sequence using three carefully chosen questions — each one building trust so the next lands deeper. The structure moves from light and nostalgic (Level 1), to aspirational and personality-revealing (Level 2), to relational and collaborative (Level 3). By the time participants reach the third question, the group has warmed up and deeper answers feel natural rather than forced. The facilitator chooses questions that fit the group's context and the session's goals.` },
+  { id:'m83', cat:'Reflection & Feedback', name:'Parking Lot', desc:'Capture ideas, questions, and topics that are important but out of scope for the current discussion. Items are noted visually — on a sticky note wall, whiteboard, or shared doc — so nothing gets lost and participants feel heard even when a thread cannot be pursued in the moment. The facilitator returns to Parking Lot items at the end of the session or routes them to the appropriate next step.' },
+  { id:'m84', cat:'Prioritization & Decision Making', name:'Idea Scorecard', desc:'Evaluate ideas against a shared set of criteria using a simple scoring rubric. The group first agrees on 3 to 5 criteria that matter most — such as feasibility, impact, alignment with goals, or cost. Each idea is then scored against each criterion on a consistent scale, and totals are compared. Makes evaluation transparent, reduces bias, and creates a defensible basis for decisions. Particularly useful when the group needs to narrow a large set of ideas to a shortlist.' }
+];
+
+let activeMethods = [];
+let activeMethodCat = 'all';
+let editingMethodId = null;
+
+function loadMethods() {
+  try {
+    const saved = localStorage.getItem('cps_methods');
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return DEFAULT_METHODS.map(m => ({...m}));
+}
+
+function saveMethods() {
+  try { localStorage.setItem('cps_methods', JSON.stringify(activeMethods)); } catch(e) {}
+}
+
+function initMethods() {
+  activeMethods = loadMethods();
+}
+
+function setMethodCat(cat) {
+  activeMethodCat = cat;
+  document.querySelectorAll('.mcat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  renderMethods();
+}
+
+function renderMethodCatBtns() {
+  const wrap = document.getElementById('methods-cat-btns');
+  if (!wrap) return;
+  let html = `<button class="step-btn mcat-btn active" data-cat="all" onclick="setMethodCat('all')">All</button>`;
+  html += `<button class="step-btn mcat-btn" data-cat="favs" onclick="setMethodCat('favs')" style="border-color:#f0b429;color:#9a6200;">⭐ Favorites</button>`;
+  METHOD_CATS.forEach(c => {
+    const col = METHOD_CAT_COLORS[c] || {};
+    html += `<button class="step-btn mcat-btn" data-cat="${c}" onclick="setMethodCat('${c.replace(/'/g,"\'")}')" style="border-color:${col.border||'var(--border)'};color:${col.color||'var(--muted)'};">${c}</button>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function renderMethods() {
+  const q = (document.getElementById('methods-search')?.value || '').toLowerCase();
+  const methodFavs = JSON.parse(localStorage.getItem('cps_method_favs') || '[]');
+  const filtered = activeMethods.filter(m => {
+    const matchCat = activeMethodCat === 'all' || (activeMethodCat === 'favs' && methodFavs.includes(m.id)) || m.cat === activeMethodCat;
+    const matchQ = !q || m.name.toLowerCase().includes(q) || (m.desc||'').toLowerCase().includes(q) || m.cat.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+
+  const statsEl = document.getElementById('methods-stats');
+  if (statsEl) statsEl.textContent = `Showing ${filtered.length} of ${activeMethods.length} methods`;
+
+  const grid = document.getElementById('methods-grid');
+  if (!grid) return;
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted);font-size:14px;">No methods match your search.</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(m => {
+    const col = METHOD_CAT_COLORS[m.cat] || { bg:'#f5f5f5', color:'#333', border:'#ccc' };
+    const isFav = methodFavs.includes(m.id);
+    return `<div class="card${isFav ? ' starred' : ''}" style="position:relative;">
+      <button onclick="toggleMethodFav('${m.id}')" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:16px;line-height:1;color:${isFav ? '#f0b429' : '#ccc'};">★</button>
+      <span class="cat-badge" style="background:${col.bg};color:${col.color};border:1px solid ${col.border};">${m.cat}</span>
+      <div class="card-term">${m.name}</div>
+      <div class="card-def">${m.desc || '<em style="color:var(--muted)">No description yet</em>'}</div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button onclick="editMethod('${m.id}')" style="font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--muted);">Edit</button>
+        <button onclick="deleteMethod('${m.id}')" style="font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid #e57373;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;color:#c62828;">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openMethodModal(id) {
+  editingMethodId = id || null;
+  const modal = document.getElementById('method-modal');
+  const title = document.getElementById('modal-title');
+  if (id) {
+    const m = activeMethods.find(x => x.id === id);
+    if (!m) return;
+    title.textContent = 'Edit Method';
+    document.getElementById('modal-name').value = m.name;
+    document.getElementById('modal-cat').value = m.cat;
+    document.getElementById('modal-desc').value = m.desc || '';
+  } else {
+    title.textContent = 'Add Method';
+    document.getElementById('modal-name').value = '';
+    document.getElementById('modal-cat').value = METHOD_CATS[0];
+    document.getElementById('modal-desc').value = '';
+  }
+  modal.style.display = 'flex';
+}
+
+function closeMethodModal() {
+  document.getElementById('method-modal').style.display = 'none';
+  editingMethodId = null;
+}
+
+function saveMethod() {
+  const name = document.getElementById('modal-name').value.trim();
+  const cat  = document.getElementById('modal-cat').value;
+  const desc = document.getElementById('modal-desc').value.trim();
+  if (!name) { alert('Please enter a method name.'); return; }
+
+  if (editingMethodId) {
+    const idx = activeMethods.findIndex(m => m.id === editingMethodId);
+    if (idx > -1) activeMethods[idx] = { ...activeMethods[idx], name, cat, desc };
+  } else {
+    const id = 'mc' + Date.now();
+    activeMethods.push({ id, cat, name, desc });
+  }
+  saveMethods();
+  closeMethodModal();
+  renderMethods();
+}
+
+function editMethod(id) { openMethodModal(id); }
+
+function toggleMethodFav(id) {
+  const favs = JSON.parse(localStorage.getItem('cps_method_favs') || '[]');
+  const idx = favs.indexOf(id);
+  if (idx === -1) favs.push(id);
+  else favs.splice(idx, 1);
+  localStorage.setItem('cps_method_favs', JSON.stringify(favs));
+  renderMethods();
+}
+
+function deleteMethod(id) {
+  if (!confirm('Delete this method?')) return;
+  activeMethods = activeMethods.filter(m => m.id !== id);
+  saveMethods();
+  renderMethods();
+}
+
+// ══════════════════════════════════════════
+// TOOLS DATA
+// ══════════════════════════════════════════
+const TOOLS_DATA = {
+  'Assessing the Situation': [
+    {
+      type: 'Divergent', typeBadge: 'badge-div',
+      tools: [
+        { name: '5 Ws and an H',
+          does: `Provides a basic overview of the data by asking who, what, when, where, why, and how. Through these categories, an individual or group can explore data associated with an opportunity or predicament.`,
+          you: `To gather data, ask and record answers to who, what, when, where, why, and how. Add "else" to get more of each. Keep divergent guidelines in mind for each category to get stretch perspectives you might have otherwise overlooked.` },
+        { name: 'Why/Why Diagram',
+          does: `By asking a series of why questions, you are able to uncover what is behind a situation.`,
+          you: `Identify a situation requiring creative thinking. Pose the question "why?" — for example, "Why is this happening?", "Why is it a problem?", or "Why is this important?" Ask why a multitude of times. Once initial responses are recorded, conduct a second round of why questions on the answers from the first round.` }
+      ]
+    },
+    {
+      type: 'Convergent', typeBadge: 'badge-con',
+      tools: [
+        { name: 'Hits',
+          does: `Uses an intuitive approach to identify the most pertinent data within a large set. Reduces individual data points into a more manageable number.`,
+          you: `Review your list of data. As you look over your data, mark those items that jump out at you or seem most relevant to the situation.` },
+        { name: 'Highlighting',
+          does: `Identifies the most relevant individual pieces of data and then organizes individual data points into clusters.`,
+          you: `Three basic steps: First, identify the Hits among your data. Second, using only those data that have been selected, group them into categories. Third, name each category.` }
+      ]
+    },
+    {
+      type: 'Metacognitive', typeBadge: 'badge-meta',
+      tools: [
+        { name: `4I's`,
+          does: `Helps an individual or group determine if the problem identified is a good match for the CPS process.`,
+          you: `Use four criteria to evaluate whether the problem would benefit from CPS: determine if the person or group can have a direct influence on the situation; explore the degree to which imaginative solutions will be sought; determine how much interest there is in resolving the situation; and consider the immediacy of the situation.` },
+        { name: 'Key Word Search',
+          does: `Presents a list of words that describe activities associated with different steps of the process. These key words can be used to help identify where you need to be in the process.`,
+          you: `After reviewing your converged list of data, create a task statement capturing the situation. Identify the verb used and compare it to the list of key words associated with the six remaining CPS steps. Select a final task statement and proceed to the CPS step most associated with it.` },
+        { name: 'If-Then Process Analysis',
+          does: `Locates people within the CPS process by presenting a list of if-then scenarios. The "if" portion describes the process need; the "then" identifies the most appropriate process step.`,
+          you: `Consider what your process need is relative to the problem. Read down the column of if statements until you find one that matches what you believe you need to do. Each if statement is paired with a then statement indicating which process step best fulfills your need. Find that step and proceed.` }
+      ]
+    }
+  ],
+  'Exploring the Vision': [
+    {
+      type: 'Divergent', typeBadge: 'badge-div',
+      tools: [
+        { name: 'Wishful Thinking',
+          does: `Enables you to think broadly about the future both in terms of desirable and undesirable future outcomes.`,
+          you: `Use divergent thinking to generate a list of possible positive future outcomes using the stem "Wouldn't it be nice if…" to explore outcomes you wish to create. Do the same for negative future outcomes using "Wouldn't it be awful if…"` },
+        { name: 'Storyboarding',
+          does: `Defines a future goal and the steps required to attain the goal.`,
+          you: `Create a panel with six squares. In the first square, draw an image of the present state. In the sixth square, draw an image of the desired future state. Fill in the remaining squares showing the key steps that must be taken to go from the current situation to the ideal future image.` }
+      ]
+    },
+    {
+      type: 'Convergent', typeBadge: 'badge-con',
+      tools: [
+        { name: 'Success Zones',
+          does: `Enables you to examine competing future images to determine which are the most promising to pursue.`,
+          you: `All options are evaluated against two criteria: Degree of Importance and Probability of Success. Once the future images are evaluated, each is placed in a graphic matrix that helps to identify those options worth pursuing.` }
+      ]
+    }
+  ],
+  'Formulating Challenges': [
+    {
+      type: 'Divergent', typeBadge: 'badge-div',
+      tools: [
+        { name: 'Statement Starters in Formulating Challenges',
+          does: `Enables you to articulate the challenge in a positive, forward-thinking framework that encourages idea generation and problem solution.`,
+          you: `Place a Statement Starter — "In what ways might I (IWWMI)…", "How to (H2)…", or "What might (WM)…" — at the beginning of each challenge.` },
+        { name: 'Webbing',
+          does: `Enables you to view a challenge from a wide variety of perspectives, including more abstract and more concrete views of the challenge as originally presented.`,
+          you: `Begin with an initial challenge or statement of the goal. Ask "why?" or "what's stopping me/us?" to generate additional challenges that are more abstract or concrete. Ask "why else?" or "what else is stopping me/us?" to generate additional challenges.` }
+      ]
+    }
+  ],
+  'Exploring Ideas': [
+    {
+      type: 'Divergent', typeBadge: 'badge-div',
+      tools: [
+        { name: 'Brainstorming',
+          does: `Allows a group of individuals working together to productively generate a diverse set of options by encouraging them to follow the principles of divergent thinking.`,
+          you: `Convene a group of five to eight individuals. Identify the challenge and state it in the form of a question. Follow the guidelines for divergent thinking (Defer Judgment, Go for Quantity, Make Connections, Seek Novelty) to generate many possible solutions.` },
+        { name: 'Forced Connections',
+          does: `Intentionally encourages flexible thinking by challenging the problem solver to generate solutions to the problem by using objects that are unrelated to the situation.`,
+          you: `Collect a variety of objects unrelated to the problem. Ask yourself or the group, "What ideas do you get from (object) for (the challenge)?" Continue generating ideas using these objects, considering size, shape, color, texture, use, and memories they evoke.` }
+      ]
+    },
+    {
+      type: 'Convergent', typeBadge: 'badge-con',
+      tools: [
+        { name: 'Hits',
+          does: `Uses an intuitive approach to identify the most pertinent ideas within a large set.`,
+          you: `Review your list of ideas. Mark those that jump out at you or seem most promising and relevant to the challenge.` },
+        { name: 'Highlighting',
+          does: `Identifies the most relevant individual ideas and organizes them into clusters.`,
+          you: `First, identify the Hits among your ideas. Second, group the selected ideas into categories. Third, name each category.` }
+      ]
+    }
+  ],
+  'Formulating Solutions': [
+    {
+      type: 'Integrative', typeBadge: 'badge-int',
+      tools: [
+        { name: 'Criteria',
+          does: `Establishes benchmarks for evaluation. Helps to screen ideas.`,
+          you: `Generate a list of Criteria in response to "will it…?" or "does it…?" Select key criteria. Then select ideas that fit the key Criteria. The closer an idea comes to meeting the Criteria, the stronger it is.` },
+        { name: 'Evaluation Matrix',
+          does: `Illustrates relative strength of ideas in relation to Criteria. Helps to make decisions about the most promising ideas to pursue.`,
+          you: `When you have 4–10 ideas, list them on the right side of a grid and put key Criteria across the top. Compare and rate each idea by each criterion. Analyze results for weak and strong points and consider implications for further development or a final decision.` },
+        { name: `Pluses, Potentials, Concerns, and Overcoming Concerns (PPC°)`,
+          does: `Uses itemized checklist (pluses, potentials, concerns, and overcoming concerns) to evaluate one to three ideas. Strengthens ideas by identifying and addressing key shortcomings and highlighting key advantages.`,
+          you: `Select one idea at a time and place it at the top of a sheet. List the letters P, P, C, and O. Under the first P list as many pluses as you can. Move to the second P and list potentials. List the concerns, worded as questions with an idea-inviting stem such as "How might I…?" Under O, identify the major concerns and diverge to overcome each.` }
+      ]
+    }
+  ],
+  'Exploring Acceptance': [
+    {
+      type: 'Divergent', typeBadge: 'badge-div',
+      tools: [
+        { name: 'Assisters and Resisters',
+          does: `Sorts planning contingencies into two categories: those sources that will help (assisters) and those that will hinder (resisters) success.`,
+          you: `The basic questions of who, what, where, when, why, and how are used to identify what factors will assist or resist implementation of the new solution or change. Divergent thinking is applied to generate options within each of these categories.` },
+        { name: 'Stakeholder Analysis',
+          does: `Identifies key people who have a vested interest in the solution or change and categorizes these individuals into those who will support and those who will reject the change.`,
+          you: `Create a list of those individuals who have a vested interest in the solution or change. For each person, identify his or her position along a scale from strongly support to strongly oppose. Determine where each person needs to be to support implementation. Generate action steps for those who need to be moved from one position to another.` }
+      ]
+    }
+  ],
+  'Formulating a Plan': [
+    {
+      type: 'Divergent', typeBadge: 'badge-div',
+      tools: [
+        { name: 'Generating Action Steps',
+          does: `A broad search for the steps required to implement a solution or change.`,
+          you: `Use divergent thinking tools to generate the steps required to implement a solution or change. Follow the divergent thinking guidelines to amass all the action steps associated with the successful rollout of a solution or change.` },
+        { name: 'How-How Diagram',
+          does: `Helps individuals and groups dig deep to identify specific action steps necessary to carry out a solution or change.`,
+          you: `Identify a solution or change you wish to implement. Ask "how can this be achieved?" Record the responses — these become the first layer of action steps. For each of the initial action steps again ask "how can this be achieved?" Continue asking "how" until you reach the logical limits.` }
+      ]
+    },
+    {
+      type: 'Convergent', typeBadge: 'badge-con',
+      tools: [
+        { name: 'Sequencing',
+          does: `Organizes action steps along a timeline.`,
+          you: `Define the deadline by which you wish to implement a solution or change. Define four blocks of time within this time horizon (immediate, short term, intermediate, and long term). Sort the action steps into these four blocks of time.` },
+        { name: 'Performance Dashboard',
+          does: `Provides ongoing feedback on progress made toward a goal.`,
+          you: `Identify the key outcomes that would demonstrate progress toward the goal. For each outcome, define a graphic performance indicator that provides visual feedback. Monitor progress by checking the performance indicators.` }
+      ]
+    }
+  ]
+}
+
+const TOOLS_STEPS = [
+  'Assessing the Situation',
+  'Exploring the Vision',
+  'Formulating Challenges',
+  'Exploring Ideas',
+  'Formulating Solutions',
+  'Exploring Acceptance',
+  'Formulating a Plan'
+];
+
+let activeToolsStep = 'Assessing the Situation';
+
+function renderToolsStepBtns() {
+  const wrap = document.getElementById('tools-step-btns');
+  if (!wrap) return;
+  const allActive = activeToolsStep === 'all';
+  let btns = `<button class="step-btn${allActive ? ' active' : ''}" onclick="selectToolsStep('all')">All Tools</button>`;
+  btns += TOOLS_STEPS.map(s => `
+    <button class="step-btn${s === activeToolsStep ? ' active' : ''}" onclick="selectToolsStep(this.dataset.step)" data-step="${s}">${s}</button>
+  `).join('');
+  wrap.innerHTML = btns;
+}
+
+function selectToolsStep(step) {
+  activeToolsStep = step;
+  renderToolsStepBtns();
+  renderToolsDisplay();
+}
+
+function renderToolsDisplay() {
+  const wrap = document.getElementById('tools-display');
+  if (!wrap) return;
+
+  const phaseColors = {
+    'Executive Step':  { bg:'#e8f0e9', color:'#1a3d28', border:'#2d5a3d' },
+    'Clarification':   { bg:'#c8d8f8', color:'#1a3060', border:'#2a4a90' },
+    'Transformation':  { bg:'#b6efd0', color:'#1a4a2e', border:'#1a6640' },
+    'Implementation':  { bg:'#fde9a0', color:'#5c3a00', border:'#9a6200' }
+  };
+
+  const stepsToShow = activeToolsStep === 'all' ? TOOLS_STEPS : [activeToolsStep];
+
+  let html = '';
+
+  stepsToShow.forEach(stepName => {
+    const groups = TOOLS_DATA[stepName] || [];
+    const phase = STEP_PHASES[stepName] || 'Executive Step';
+    const pc = phaseColors[phase] || phaseColors['Executive Step'];
+
+    if (activeToolsStep === 'all') {
+      html += `<div style="margin-bottom:.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;margin-top:1.5rem;">
+        <h3 style="font-family:'DM Serif Display',serif;font-size:1.1rem;font-weight:400;color:var(--text);">${stepName}</h3>
+        <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 9px;border-radius:20px;background:${pc.bg};color:${pc.color};border:1px solid ${pc.border};">${phase}</span>
+      </div>`;
+    } else {
+      html += `<div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;">
+        <h3 style="font-family:'DM Serif Display',serif;font-size:1.15rem;font-weight:400;color:var(--text);">${stepName}</h3>
+        <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 9px;border-radius:20px;background:${pc.bg};color:${pc.color};border:1px solid ${pc.border};">${phase}</span>
+      </div>`;
+    }
+
+    groups.forEach(group => {
+      html += `<div style="margin-bottom:1rem;">
+        <div style="margin-bottom:.6rem;">
+          <span class="tool-type-badge ${group.typeBadge}">${group.type}</span>
+        </div>`;
+      group.tools.forEach(tool => {
+        html += `<div class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-type-badge ${group.typeBadge}" style="font-size:9px;padding:1px 7px;">${group.type}</span>
+            <span>${tool.name}</span>
+          </div>
+          <div class="tool-body">
+            <div>
+              <div class="tool-body-label">What the tool does</div>
+              <div class="tool-body-text">${tool.does}</div>
+            </div>
+            <div>
+              <div class="tool-body-label">What you do</div>
+              <div class="tool-body-text">${tool.you}</div>
+            </div>
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+    });
+  });
+
+  wrap.innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+renderRef();
+renderStreak();
+renderTables();
+renderCPSFigures();
+renderToolsStepBtns();
+renderToolsDisplay();
+initMethods();
+setDeck('all');
+</script>
+</body>
+</html>
